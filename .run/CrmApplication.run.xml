@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="CrmApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="store-crm.engine.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="ru.exprod.crm.CrmApplication" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <envs>
+      <env name="DB_HOST" value="localhost" />
+      <env name="DB_PORT" value="5432" />
+      <env name="DB_NAME" value="exprod" />
+      <env name="DB_USER" value="exprod" />
+      <env name="DB_LOGIN" value="exprod" />
+    </envs>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
