@@ -19,6 +19,9 @@ CREATE TABLE manager (
     created_on timestamp not null default now()
 );
 
+INSERT INTO manager (manager_firstname, manager_lastname, email, password)
+values ('admin', 'admin', 'admin', '$2y$13$u/yVGgDH0RTgJ5VMedv7seffQiZNs.pH1lVQpoRsY19oUUi2akrpa');
+
 CREATE TABLE role (
     role_id serial not null primary key,
     alias varchar(32) not null,
@@ -33,6 +36,10 @@ CREATE TABLE manager_has_role (
     created_on timestamp not null default now()
 );
 CREATE UNIQUE INDEX manager_has_role_primary on manager_has_role(manager_id, role_id);
+
+INSERT INTO manager_has_role (manager_id, role_id)
+values ((select manager_id from manager where email = 'admin'), (select role_id from role where alias = 'ADMIN'));
+
 
 CREATE TABLE unit (
     unit_id serial not null primary key,

@@ -8,7 +8,7 @@
       <env name="DB_PORT" value="5432" />
       <env name="DB_NAME" value="exprod" />
       <env name="DB_USER" value="exprod" />
-      <env name="DB_LOGIN" value="exprod" />
+      <env name="DB_PASSWORD" value="exprod" />
     </envs>
     <method v="2">
       <option name="Make" enabled="true" />
