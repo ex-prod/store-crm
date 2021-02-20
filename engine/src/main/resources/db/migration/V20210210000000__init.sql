@@ -12,14 +12,14 @@
 
 CREATE TABLE manager (
     manager_id serial not null primary key,
-    manager_firstname varchar(128) not null,
-    manager_lastname varchar(128) not null,
+    firstname varchar(128) not null,
+    lastname varchar(128) not null,
     email varchar(128) not null,
     password varchar(256) not null,
     created_on timestamp not null default now()
 );
 
-INSERT INTO manager (manager_firstname, manager_lastname, email, password)
+INSERT INTO manager (firstname, lastname, email, password)
 values ('admin', 'admin', 'admin', '$2y$13$u/yVGgDH0RTgJ5VMedv7seffQiZNs.pH1lVQpoRsY19oUUi2akrpa');
 
 CREATE TABLE role (
