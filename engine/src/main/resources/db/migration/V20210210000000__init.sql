@@ -28,7 +28,7 @@ CREATE TABLE role (
     created_on timestamp not null default now()
 );
 
-INSERT INTO role (alias) values ('ADMIN'), ('SALES_NEZAMETNO');
+INSERT INTO role (alias) values ('ADMIN'), ('SALES_TEST');
 
 CREATE TABLE manager_has_role (
     manager_id int not null references manager(manager_id),
@@ -44,11 +44,11 @@ values ((select manager_id from manager where email = 'admin'), (select role_id 
 CREATE TABLE unit (
     unit_id serial not null primary key,
     alias varchar(128) not null,
-    store_token varchar(128) not null,
+    moysklad_token varchar(128) not null,
     created_on timestamp not null default now()
 );
 
-INSERT INTO unit (alias, store_token) VALUES ('nezametno-shop', '86adb04f75a493a941e356d6bc3895f42d63de7f');
+INSERT INTO unit (alias, moysklad_token) VALUES ('test-shop', '86adb04f75a493a941e356d6bc3895f42d63de7f');
 
 CREATE TABLE role_has_unit (
     role_id int not null references role(role_id),
@@ -58,8 +58,8 @@ CREATE TABLE role_has_unit (
 CREATE UNIQUE INDEX role_has_unit_primary on role_has_unit(role_id, unit_id);
 
 INSERT INTO role_has_unit (role_id, unit_id)
-VALUES ((select role_id from role where alias = 'ADMIN'), (select unit_id from unit where alias = 'nezametno-shop')),
-       ((select role_id from role where alias = 'SALES_NEZAMETNO'), (select unit_id from unit where alias = 'nezametno-shop'));
+VALUES ((select role_id from role where alias = 'ADMIN'), (select unit_id from unit where alias = 'test-shop')),
+       ((select role_id from role where alias = 'SALES_TEST'), (select unit_id from unit where alias = 'test-shop'));
 
 CREATE TABLE image_group (
     image_group_id serial not null primary key,
@@ -70,21 +70,22 @@ CREATE TABLE variant (
     variant_id serial not null primary key,
     unit_id int not null references unit(unit_id),
     moysklad_id varchar(36) not null,
-    name varchar(64) not null,
-    code varchar(64) not null,
-    externalCode varchar(64) not null,
+    name varchar(1024) not null,
+    code varchar(128) not null,
+    external_code varchar(128) not null,
     archived boolean not null,
-    price decimal(6,2) not null,
+    price decimal(12,2) not null,
     quantity int not null,
     image_group_id int not null references image_group(image_group_id),
     created_on timestamp not null default now()
 );
 CREATE INDEX variant_unit_id_idx on variant(unit_id);
+CREATE UNIQUE INDEX variant_moysklad_id_idx on variant(moysklad_id);
 
 CREATE TABLE image(
     image_id serial not null primary key,
     image_group_id int not null references image_group(image_group_id),
-    original_url_hash varchar(32) not null,
+    moysklad_url_hash varchar(36) not null,
     original_path varchar(128) not null,
     thumbnail_path varchar(128) not null,
     created_on timestamp not null default now()
@@ -100,5 +101,5 @@ CREATE TABLE unit_order_state(
 CREATE UNIQUE INDEX unit_order_state_unit_id_alias_unique ON unit_order_state(unit_id, alias);
 
 INSERT INTO unit_order_state(unit_id, alias, moysklad_id) VALUES
-        ((SELECT unit_id FROM unit WHERE alias = 'nezametno-shop'), 'new',       'de0e5b27-2d6b-11eb-0a80-02f30035f90d'),
-        ((SELECT unit_id FROM unit WHERE alias = 'nezametno-shop'), 'confirmed', 'de0e5c2f-2d6b-11eb-0a80-02f30035f90e');
+        ((SELECT unit_id FROM unit WHERE alias = 'test-shop'), 'new',       'de0e5b27-2d6b-11eb-0a80-02f30035f90d'),
+        ((SELECT unit_id FROM unit WHERE alias = 'test-shop'), 'confirmed', 'de0e5c2f-2d6b-11eb-0a80-02f30035f90e');
