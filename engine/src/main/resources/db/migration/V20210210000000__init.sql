@@ -85,7 +85,7 @@ CREATE UNIQUE INDEX variant_moysklad_id_idx on variant(moysklad_id);
 CREATE TABLE image(
     image_id serial not null primary key,
     image_group_id int not null references image_group(image_group_id),
-    moysklad_url_hash varchar(32) not null,
+    moysklad_url_hash varchar(36) not null,
     original_path varchar(128) not null,
     thumbnail_path varchar(128) not null,
     created_on timestamp not null default now()

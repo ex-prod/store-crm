@@ -28,4 +28,10 @@ public class ImageResizeService {
         outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
         return outputImage;
     }
+
+    BufferedImage createOriginal(BufferedImage original) {
+        BufferedImage outputImage = new BufferedImage(original.getWidth(), original.getHeight(), BufferedImage.TYPE_INT_RGB);
+        outputImage.getGraphics().drawImage(original, 0, 0, null);
+        return outputImage;
+    }
 }

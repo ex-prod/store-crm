@@ -69,8 +69,8 @@ public class SyncService {
     private void addNewImages(Map<String, ImageModel> existedImages, Map<String, DownloadableImage> actualImages, Integer imageGroupId) {
         for (Map.Entry<String, DownloadableImage> actualImage : actualImages.entrySet()) {
             if (!existedImages.containsKey(actualImage.getKey())) {
-                mediaService.addMediaFile(imageGroupId, actualImage.getKey(), actualImage.getValue());
-                log.info("media added " + actualImage.getKey());
+                ImageModel created = mediaService.addMediaFile(imageGroupId, actualImage.getKey(), actualImage.getValue());
+                log.info("media added " + created.getOriginalPath());
             }
         }
     }
