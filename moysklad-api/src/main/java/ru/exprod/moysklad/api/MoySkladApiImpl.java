@@ -10,6 +10,12 @@ import ru.exprod.moysklad.MoySkladApi;
 import ru.exprod.moysklad.api.model.AssortmentResponse;
 import ru.exprod.moysklad.api.model.ImageMeta;
 import ru.exprod.moysklad.api.model.MetaResponse;
+import ru.exprod.moysklad.model.CounterParty;
+import ru.exprod.moysklad.model.CounterPartyData;
+import ru.exprod.moysklad.model.Order;
+import ru.exprod.moysklad.model.OrderData;
+import ru.exprod.moysklad.model.OrderPosition;
+import ru.exprod.moysklad.model.OrderPositionData;
 import ru.exprod.moysklad.model.Variant;
 import ru.exprod.moysklad.tools.RandomString;
 
@@ -55,6 +61,26 @@ public class MoySkladApiImpl implements MoySkladApi {
                 .map(builder -> builder.setImages(this::getVariantImages, this::downloadImage))
                 .map(Variant.Builder::build)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Order> getOrders() {
+        return null;
+    }
+
+    @Override
+    public CounterParty createCounterParty(CounterPartyData data) {
+        return null;
+    }
+
+    @Override
+    public Order createOrder(OrderData data) {
+        return null;
+    }
+
+    @Override
+    public OrderPosition createOrderPosition(OrderPositionData data) {
+        return null;
     }
 
     public List<ImageMeta> getVariantImages(String productId) {
