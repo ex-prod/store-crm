@@ -43,8 +43,8 @@ public class SyncService {
     }
 
     public void syncUnit(UnitModel unit) {
-        MoySkladApi api = new MoySkladApiImpl();
-        List<Variant> variants = api.getProducts();
+        MoySkladApi api = new MoySkladApiImpl(unit.getToken());
+        List<Variant> variants = api.getAssortmentVariants();
 
         variants.forEach(variant -> variantService.syncVariant(variant, unit.getId()));
         variants.forEach(this::syncImages);

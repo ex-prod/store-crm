@@ -11,7 +11,7 @@ import ru.exprod.moysklad.model.Variant;
 import java.util.List;
 
 public interface MoySkladApi {
-    List<Variant> getProducts();
+    List<Variant> getAssortmentVariants();
     List<Order> getOrders();
     CounterParty createCounterParty(CounterPartyData data);
     Order createOrder(OrderData data);

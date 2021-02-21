@@ -19,8 +19,11 @@ CREATE TABLE manager (
     created_on timestamp not null default now()
 );
 
+CREATE INDEX manager_email_idx ON manager(email);
+
 INSERT INTO manager (firstname, lastname, email, password)
-values ('admin', 'admin', 'admin', '$2y$13$u/yVGgDH0RTgJ5VMedv7seffQiZNs.pH1lVQpoRsY19oUUi2akrpa');
+values ('admin', 'admin', 'admin', '$2y$13$u/yVGgDH0RTgJ5VMedv7seffQiZNs.pH1lVQpoRsY19oUUi2akrpa'),
+       ('system', 'system', 'system', '');
 
 CREATE TABLE role (
     role_id serial not null primary key,
@@ -45,10 +48,12 @@ CREATE TABLE unit (
     unit_id serial not null primary key,
     alias varchar(128) not null,
     moysklad_token varchar(128) not null,
+    default_manager_id int not null references manager(manager_id),
     created_on timestamp not null default now()
 );
 
-INSERT INTO unit (alias, moysklad_token) VALUES ('test-shop', '86adb04f75a493a941e356d6bc3895f42d63de7f');
+INSERT INTO unit (alias, moysklad_token, default_manager_id) VALUES
+        ('test-shop', '86adb04f75a493a941e356d6bc3895f42d63de7f', (SELECT manager_id from manager where email = 'system'));
 
 CREATE TABLE role_has_unit (
     role_id int not null references role(role_id),
@@ -103,3 +108,38 @@ CREATE UNIQUE INDEX unit_order_state_unit_id_alias_unique ON unit_order_state(un
 INSERT INTO unit_order_state(unit_id, alias, moysklad_id) VALUES
         ((SELECT unit_id FROM unit WHERE alias = 'test-shop'), 'new',       'de0e5b27-2d6b-11eb-0a80-02f30035f90d'),
         ((SELECT unit_id FROM unit WHERE alias = 'test-shop'), 'confirmed', 'de0e5c2f-2d6b-11eb-0a80-02f30035f90e');
+
+CREATE TABLE customer(
+    customer_id serial not null primary key,
+    name varchar(128) not null,
+    phone varchar(32) not null,
+    username varchar(64) not null,
+    city varchar(32) not null,
+    zip varchar(8) not null,
+    address varchar(128) not null,
+    created_on timestamp not null default now()
+);
+
+CREATE TABLE customer_order(
+    customer_order_id serial not null primary key,
+    moysklad_id varchar(36) not null,
+    unit_id int not null references unit(unit_id),
+    name varchar(256) not null,
+    positions int not null,
+    amount decimal(12,2) not null,
+    state varchar(32) not null,
+    delivery_cost decimal(12,2) not null,
+    customer_id int not null references customer(customer_id),
+    manager_id int not null references manager(manager_id),
+    created_on timestamp not null default now()
+);
+
+CREATE INDEX order_counterparty_id_idx ON customer_order(customer_id);
+
+CREATE TABLE order_position(
+    order_position_id serial not null primary key,
+    moysklad_id varchar(36) not null,
+    order_id int not null references customer_order(customer_order_id),
+    variant_id int not null references variant(variant_id),
+    count int not null
+);
