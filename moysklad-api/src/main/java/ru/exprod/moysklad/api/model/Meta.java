@@ -5,6 +5,14 @@ public class Meta {
     private String type;
     private Integer size;
 
+    public Meta() {
+    }
+
+    public Meta(String href, String type) {
+        this.href = href;
+        this.type = type;
+    }
+
     public String getHref() {
         return href;
     }

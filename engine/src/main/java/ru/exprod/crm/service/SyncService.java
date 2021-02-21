@@ -9,13 +9,18 @@ import ru.exprod.crm.service.model.UnitModel;
 import ru.exprod.crm.service.model.VariantModel;
 import ru.exprod.moysklad.MoySkladApi;
 import ru.exprod.moysklad.api.MoySkladApiImpl;
+import ru.exprod.moysklad.model.CustomerData;
 import ru.exprod.moysklad.model.DownloadableImage;
+import ru.exprod.moysklad.model.OrderData;
+import ru.exprod.moysklad.model.OrderPositionData;
 import ru.exprod.moysklad.model.Variant;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -43,7 +48,7 @@ public class SyncService {
     }
 
     public void syncUnit(UnitModel unit) {
-        MoySkladApi api = new MoySkladApiImpl(unit.getToken());
+        MoySkladApi api = new MoySkladApiImpl(unit.getToken(), unit.getFlowConfigModel());
         List<Variant> variants = api.getAssortmentVariants();
 
         variants.forEach(variant -> variantService.syncVariant(variant, unit.getId()));
@@ -95,4 +100,36 @@ public class SyncService {
         }
     }
 
+    public void test() {
+        List<UnitModel> units = unitService.getAll();
+        UnitModel unit = units.get(0);
+        MoySkladApi api = new MoySkladApiImpl(unit.getToken(), unit.getFlowConfigModel());
+
+        OrderData data = new OrderData() {
+            @Override
+            public String getName() {
+                return "name bla 1" + ThreadLocalRandom.current().nextInt();
+            }
+
+            public String getDescription() {
+                return "desc order";
+            }
+
+            @Override
+            public List<OrderPositionData> getPositions() {
+                return Collections.emptyList();
+            }
+
+            @Override
+            public String getManagerName() {
+                return "марфа";
+            }
+
+            @Override
+            public CustomerData getCustomerData() {
+                return null;
+            }
+        };
+        api.createOrder(data);
+    }
 }
