@@ -2,14 +2,15 @@ package ru.exprod.moysklad.api;
 
 import ru.exprod.moysklad.MoySkladApi;
 import ru.exprod.moysklad.api.model.AssortmentResponse;
+import ru.exprod.moysklad.api.model.Cashin;
 import ru.exprod.moysklad.api.model.ImageMeta;
 import ru.exprod.moysklad.api.model.MetaResponse;
-import ru.exprod.moysklad.model.CounterParty;
-import ru.exprod.moysklad.model.CounterPartyData;
-import ru.exprod.moysklad.model.Order;
+import ru.exprod.moysklad.api.model.Order;
+import ru.exprod.moysklad.api.model.OrderConfirm;
+import ru.exprod.moysklad.api.model.OrderCreate;
+import ru.exprod.moysklad.model.CashinData;
+import ru.exprod.moysklad.model.ConfirmOrderData;
 import ru.exprod.moysklad.model.OrderData;
-import ru.exprod.moysklad.model.OrderPosition;
-import ru.exprod.moysklad.model.OrderPositionData;
 import ru.exprod.moysklad.model.Variant;
 
 import java.util.List;
@@ -17,19 +18,21 @@ import java.util.stream.Collectors;
 
 import static java.lang.Thread.sleep;
 import static java.util.Collections.emptyList;
-import static org.springframework.http.HttpMethod.GET;
 
 public class MoySkladApiImpl implements MoySkladApi {
 
     private static final String MODIFICATION_TYPE = "variant";
     private final HttpHelper httpHelper;
-    public MoySkladApiImpl(String token) {
+    private final FlowConfig flowConfig;
+
+    public MoySkladApiImpl(String token, FlowConfig flowConfig) {
         this.httpHelper = new HttpHelper(token);
+        this.flowConfig = flowConfig;
     }
 
     @Override
     public List<Variant> getAssortmentVariants() {
-        AssortmentResponse assortmentResponse = httpHelper.get(getAssortmentUri(), AssortmentResponse.class);
+        AssortmentResponse assortmentResponse = httpHelper.get(getAssortmentPath(), AssortmentResponse.class);
         return assortmentResponse.getRows().stream()
                 .filter(assortment -> MODIFICATION_TYPE.equals(assortment.getMeta().getType()))
                 .map(Variant.Builder::new)
@@ -39,27 +42,30 @@ public class MoySkladApiImpl implements MoySkladApi {
     }
 
     @Override
-    public List<Order> getOrders() {
-        return null;
-    }
-
-    @Override
-    public CounterParty createCounterParty(CounterPartyData data) {
-        return null;
+    public List<OrderCreate> getOrders() {
+        return emptyList();
     }
 
     @Override
     public Order createOrder(OrderData data) {
-        return null;
+        OrderCreate requestData = new OrderCreate(data, flowConfig);
+        return httpHelper.post(getOrdersPath(), requestData, Order.class);
     }
 
     @Override
-    public OrderPosition createOrderPosition(OrderPositionData data) {
-        return null;
+    public Order approveOrder(ConfirmOrderData data) {
+        OrderConfirm orderConfirmData = new OrderConfirm(flowConfig);
+        return httpHelper.put(getOrderPath(data.getOrderId()), orderConfirmData, Order.class);
+    }
+
+    @Override
+    public Cashin createCashin(CashinData data) {
+        Cashin cashinData = Cashin.create(data.getPrepaidValue(), flowConfig, data.getOrderId());
+        return httpHelper.post(getCashinPath(), cashinData, Cashin.class);
     }
 
     public List<ImageMeta> getVariantImages(String productId) {
-        MetaResponse metaResponse = httpHelper.get(getVariantImagesUri(productId), MetaResponse.class);
+        MetaResponse metaResponse = httpHelper.get(getVariantImagesPath(productId), MetaResponse.class);
         if (metaResponse == null) {
             return emptyList();
         }
@@ -73,12 +79,24 @@ public class MoySkladApiImpl implements MoySkladApi {
                 .collect(Collectors.toList());
     }
 
-    private String getVariantImagesUri(String productId) {
+    private String getVariantImagesPath(String productId) {
         return "/variant/"+ productId +"/images";
     }
 
-    private String getAssortmentUri() {
+    private String getAssortmentPath() {
         return "/assortment";
+    }
+
+    private String getOrdersPath() {
+        return "/customerorder";
+    }
+
+    private String getOrderPath(String orderId) {
+        return "/customerorder/" + orderId;
+    }
+
+    private String getCashinPath() {
+        return "/cashin";
     }
 
 }

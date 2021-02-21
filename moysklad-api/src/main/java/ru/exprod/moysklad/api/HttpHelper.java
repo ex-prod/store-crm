@@ -18,13 +18,14 @@ import java.util.function.Function;
 
 import static java.lang.Thread.sleep;
 import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
+import static ru.exprod.moysklad.MoySkladApi.ENTITY_URL;
 
 public class HttpHelper {
     private static final ThreadLocal<RandomString> randomString = ThreadLocal.withInitial(
             () -> new RandomString(16, ThreadLocalRandom.current())
     );
-
-    private static final String ENTITY_URL = "https://online.moysklad.ru/api/remap/1.2/entity";
 
     private final RestTemplate rest;
     private final HttpHeaders defaultJsonHeaders;
@@ -43,6 +44,16 @@ public class HttpHelper {
     <T> T get(String path, Class<T> clazz) {
         HttpEntity<MetaResponse> request = new HttpEntity<>(defaultJsonHeaders);
         return rest.exchange(getAbsolutUri(path), GET, request, clazz).getBody();
+    }
+
+    <T> T post(String path, Object requestData, Class<T> clazz) {
+        HttpEntity<Object> request = new HttpEntity<>(requestData, defaultJsonHeaders);
+        return rest.exchange(getAbsolutUri(path), POST, request, clazz).getBody();
+    }
+
+    <T> T put(String path, Object requestData, Class<T> clazz) {
+        HttpEntity<Object> request = new HttpEntity<>(requestData, defaultJsonHeaders);
+        return rest.exchange(getAbsolutUri(path), PUT, request, clazz).getBody();
     }
 
     File downloadFile(String rawUrl) {
@@ -72,6 +83,7 @@ public class HttpHelper {
 
     private File saveFileFromResponse(org.springframework.http.client.ClientHttpResponse clientHttpResponse) throws IOException {
         File ret = File.createTempFile(randomString.get().nextString(), ".tmp");
+        ret.deleteOnExit();
         StreamUtils.copy(clientHttpResponse.getBody(), new FileOutputStream(ret));
         try {
             sleep(100);
@@ -80,7 +92,4 @@ public class HttpHelper {
         }
         return ret;
     }
-
-
-
 }

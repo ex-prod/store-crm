@@ -1,4 +1,4 @@
-package ru.exprod.crm.service;
+package ru.exprod.crm.service.db;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

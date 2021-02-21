@@ -19,4 +19,13 @@ public class ManageController {
         syncService.syncAll();
     }
 
+    @RequestMapping("/test")
+    public void test() {
+        syncService.test();
+    }
+
+    @RequestMapping("/test2")
+    public void test2() {
+        syncService.test2();
+    }
 }

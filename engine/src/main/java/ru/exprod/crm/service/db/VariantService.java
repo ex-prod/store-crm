@@ -1,4 +1,4 @@
-package ru.exprod.crm.service;
+package ru.exprod.crm.service.db;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,5 +63,9 @@ public class VariantService {
     public List<VariantEntity> searchWithFilter(int unit_id, String search) {
         log.info("Send query with parameter " + search);
         return variantRepository.findListOfVariants(unit_id, "%" + search + "%", search + "%");
+    }
+
+    VariantEntity byId(Integer variantId) {
+        return variantRepository.getOne(variantId);
     }
 }

@@ -40,7 +40,7 @@ public class VariantEntity {
 
     private BigDecimal price;
 
-    private Integer quantity;
+    private BigDecimal quantity;
 
     @JsonIgnore
     @JoinColumn(name = "image_group_id", updatable = false)
@@ -107,11 +107,11 @@ public class VariantEntity {
         this.price = price;
     }
 
-    public Integer getQuantity() {
+    public BigDecimal getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(BigDecimal quantity) {
         this.quantity = quantity;
     }
 
