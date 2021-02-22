@@ -27,6 +27,7 @@ public class Variant {
     private final Function<String, List<ImageMeta>> imageMetaDownloader;
     private final Function<String, File> imageDownloader;
 
+    //Lazy init
     private List<DownloadableImage> images = null;
 
     private Variant(

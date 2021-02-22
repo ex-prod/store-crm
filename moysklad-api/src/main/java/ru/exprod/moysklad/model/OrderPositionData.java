@@ -1,4 +1,8 @@
 package ru.exprod.moysklad.model;
 
-public class OrderPositionData {
+import java.math.BigDecimal;
+
+public interface OrderPositionData {
+    String getId();
+    BigDecimal getCount();
 }
