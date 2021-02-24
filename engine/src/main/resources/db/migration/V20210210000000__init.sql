@@ -9,7 +9,6 @@
 
 
 
-
 CREATE TABLE manager (
     manager_id serial not null primary key,
     firstname varchar(128) not null,
@@ -22,7 +21,7 @@ CREATE TABLE manager (
 CREATE INDEX manager_email_idx ON manager(email);
 
 INSERT INTO manager (firstname, lastname, email, password)
-values ('admin', 'admin', 'admin', '$2y$13$u/yVGgDH0RTgJ5VMedv7seffQiZNs.pH1lVQpoRsY19oUUi2akrpa'),
+values ('admin', 'admin', 'admin', '$2a$13$mczzpkM0a4LvS78koGHspOM5O9eaTpngBY.6KhkKyI3V9XD0Hma12'),
        ('system', 'system', 'system', '');
 
 CREATE TABLE role (
@@ -116,7 +115,7 @@ CREATE TABLE variant (
     external_code varchar(128) not null,
     archived boolean not null,
     price decimal(12,2) not null,
-    quantity int not null,
+    quantity decimal(12, 2) not null,
     image_group_id int not null references image_group(image_group_id),
     created_on timestamp not null default now()
 );
@@ -154,7 +153,9 @@ CREATE TABLE customer_order(
     customer_id int not null references customer(customer_id),
     manager_id int not null references manager(manager_id),
     delivery_cost decimal(12,2) not null,
+    delivery_type varchar(32) not null,
     paid decimal(12,2) not null,
+    prepaid_type varchar(16) not null,
     comment varchar(4096) not null,
     created_on timestamp not null default now()
 );
@@ -164,7 +165,9 @@ CREATE INDEX order_counterparty_id_idx ON customer_order(customer_id);
 CREATE TABLE customer_order_position (
     customer_order_position_id serial not null primary key,
     moysklad_id varchar(36) not null,
-    order_id int not null references customer_order(customer_order_id),
+    customer_order_id int not null references customer_order(customer_order_id),
     variant_id int not null references variant(variant_id),
-    count int not null
+    count decimal(12,2) not null,
+    price decimal(12,2) not null,
+    discount decimal(5,2) not null
 );

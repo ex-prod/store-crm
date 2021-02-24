@@ -2,13 +2,16 @@ package ru.exprod.moysklad.api;
 
 import ru.exprod.moysklad.MoySkladApi;
 import ru.exprod.moysklad.api.model.AssortmentResponse;
+import ru.exprod.moysklad.api.model.Cashin;
 import ru.exprod.moysklad.api.model.ImageMeta;
 import ru.exprod.moysklad.api.model.MetaResponse;
 import ru.exprod.moysklad.api.model.Order;
-import ru.exprod.moysklad.api.model.OrderResponse;
+
+import ru.exprod.moysklad.api.model.OrderConfirm;
+import ru.exprod.moysklad.api.model.OrderCreate;
+import ru.exprod.moysklad.model.CashinData;
+import ru.exprod.moysklad.model.ConfirmOrderData;
 import ru.exprod.moysklad.model.OrderData;
-import ru.exprod.moysklad.model.OrderPosition;
-import ru.exprod.moysklad.model.OrderPositionData;
 import ru.exprod.moysklad.model.Variant;
 
 import java.util.List;
@@ -41,18 +44,25 @@ public class MoySkladApiImpl implements MoySkladApi {
 
     @Override
     public List<Order> getOrders() {
-        return null;
+        return emptyList();
     }
 
     @Override
     public Order createOrder(OrderData data) {
-        Order requestData = Order.createOrder(data, flowConfig);
+        OrderCreate requestData = new OrderCreate(data, flowConfig);
         return httpHelper.post(getOrdersPath(), requestData, Order.class);
     }
 
     @Override
-    public OrderPosition createOrderPosition(OrderPositionData data) {
-        return null;
+    public Order approveOrder(ConfirmOrderData data) {
+        OrderConfirm orderConfirmData = new OrderConfirm(flowConfig);
+        return httpHelper.put(getOrderPath(data.getOrderId()), orderConfirmData, Order.class);
+    }
+
+    @Override
+    public Cashin createCashin(CashinData data) {
+        Cashin cashinData = Cashin.create(data.getPrepaidValue(), flowConfig, data.getOrderId());
+        return httpHelper.post(getCashinPath(), cashinData, Cashin.class);
     }
 
     public List<ImageMeta> getVariantImages(String productId) {
@@ -80,6 +90,14 @@ public class MoySkladApiImpl implements MoySkladApi {
 
     private String getOrdersPath() {
         return "/customerorder";
+    }
+
+    private String getOrderPath(String orderId) {
+        return "/customerorder/" + orderId;
+    }
+
+    private String getCashinPath() {
+        return "/cashin";
     }
 
 }

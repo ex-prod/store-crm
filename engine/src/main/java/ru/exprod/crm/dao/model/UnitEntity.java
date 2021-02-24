@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -25,6 +26,10 @@ public class UnitEntity {
     @JoinColumn(name = "unit_id")
     @OneToOne
     private UnitMoyskladIdEntity moyskladIdEntity;
+
+    @JoinColumn(name = "default_manager_id", updatable = false)
+    @ManyToOne
+    private ManagerEntity defaultManager;
 
     public Integer getUnitId() {
         return unitId;
@@ -49,4 +54,9 @@ public class UnitEntity {
     public UnitMoyskladIdEntity getMoyskladIdEntity() {
         return moyskladIdEntity;
     }
+
+    public ManagerEntity getDefaultManager() {
+        return defaultManager;
+    }
+
 }

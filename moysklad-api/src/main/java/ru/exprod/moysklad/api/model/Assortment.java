@@ -1,15 +1,16 @@
 package ru.exprod.moysklad.api.model;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class Assortment {
     private String id;
     private String name;
     private String description;
-    private Integer stock;
-    private Integer reserve;
-    private Integer inTransit;
-    private Integer quantity;
+    private BigDecimal stock;
+    private BigDecimal reserve;
+    private BigDecimal inTransit;
+    private BigDecimal quantity;
     private List<Price> salePrices;
     private String article;
     private String code;
@@ -30,19 +31,19 @@ public class Assortment {
         return description;
     }
 
-    public Integer getStock() {
+    public BigDecimal getStock() {
         return stock;
     }
 
-    public Integer getReserve() {
+    public BigDecimal getReserve() {
         return reserve;
     }
 
-    public Integer getInTransit() {
+    public BigDecimal getInTransit() {
         return inTransit;
     }
 
-    public Integer getQuantity() {
+    public BigDecimal getQuantity() {
         return quantity;
     }
 

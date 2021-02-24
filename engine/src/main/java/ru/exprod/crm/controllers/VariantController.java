@@ -1,19 +1,22 @@
 package ru.exprod.crm.controllers;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import ru.exprod.crm.controllers.model.Variant;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import ru.exprod.crm.dao.model.VariantEntity;
+import ru.exprod.crm.service.db.VariantService;
 
 import java.util.List;
 
-import static java.util.Collections.emptyList;
-
 @RestController
-@RequestMapping("/api/variants")
 public class VariantController {
-    @GetMapping
-    public List<Variant> getOrders() {
-        return emptyList();
+
+    @Autowired
+    VariantService variantService;
+
+    @GetMapping("/api/unit/{unit_id}/variants")
+    public List<VariantEntity> getOrders(@PathVariable int unit_id,
+                                         @RequestParam(name = "search", required = false, defaultValue = "") String search) {
+
+        return variantService.searchWithFilter(unit_id, search);
     }
 }

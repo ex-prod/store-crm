@@ -19,7 +19,7 @@ public class Variant {
     private final String code;
     private final String externalCode;
     private final BigDecimal price;
-    private final Integer quantity;
+    private final BigDecimal quantity;
     private final Boolean archived;
 
     private final int imageCount;
@@ -75,7 +75,7 @@ public class Variant {
         return price;
     }
 
-    public Integer getQuantity() {
+    public BigDecimal getQuantity() {
         return quantity;
     }
 

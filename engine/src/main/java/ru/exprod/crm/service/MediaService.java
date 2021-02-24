@@ -2,6 +2,7 @@ package ru.exprod.crm.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.exprod.crm.service.db.MediaDbService;
 import ru.exprod.crm.service.model.ImageModel;
 import ru.exprod.moysklad.model.DownloadableImage;
 import ru.exprod.moysklad.tools.RandomString;

@@ -2,7 +2,6 @@ package ru.exprod.moysklad.api;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.client.RestTemplate;
 import ru.exprod.moysklad.api.model.MetaResponse;
@@ -14,11 +13,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Function;
 
 import static java.lang.Thread.sleep;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
 import static ru.exprod.moysklad.MoySkladApi.ENTITY_URL;
 
 public class HttpHelper {
@@ -50,6 +49,11 @@ public class HttpHelper {
         return rest.exchange(getAbsolutUri(path), POST, request, clazz).getBody();
     }
 
+    <T> T put(String path, Object requestData, Class<T> clazz) {
+        HttpEntity<Object> request = new HttpEntity<>(requestData, defaultJsonHeaders);
+        return rest.exchange(getAbsolutUri(path), PUT, request, clazz).getBody();
+    }
+
     File downloadFile(String rawUrl) {
         return rest.execute(
                 rawUrl,
@@ -77,6 +81,7 @@ public class HttpHelper {
 
     private File saveFileFromResponse(org.springframework.http.client.ClientHttpResponse clientHttpResponse) throws IOException {
         File ret = File.createTempFile(randomString.get().nextString(), ".tmp");
+        ret.deleteOnExit();
         StreamUtils.copy(clientHttpResponse.getBody(), new FileOutputStream(ret));
         try {
             sleep(100);

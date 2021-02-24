@@ -1,4 +1,4 @@
-package ru.exprod.crm.service;
+package ru.exprod.crm.service.db;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +10,8 @@ import ru.exprod.crm.dao.model.VariantEntity;
 import ru.exprod.crm.dao.repo.VariantRepository;
 import ru.exprod.crm.service.model.VariantModel;
 import ru.exprod.moysklad.model.Variant;
+
+import java.util.List;
 
 @Service
 public class VariantService {
@@ -24,6 +26,7 @@ public class VariantService {
         this.unitService = unitService;
     }
 
+    @Transactional
     public VariantModel syncVariant(Variant variant, Integer unitId) {
         UnitEntity unit = unitService.byId(unitId);
         VariantEntity entity = variantRepository
@@ -41,18 +44,28 @@ public class VariantService {
         return new VariantModel(entity);
     }
 
+    @Transactional(readOnly = true)
+    public VariantModel getVariantByMoyskladId(String moyskladId) {
+        return variantRepository.findOneByMoyskladId(moyskladId)
+                .map(VariantModel::new)
+                .orElseThrow(() -> new RuntimeException("Cannot find variant " + moyskladId));
+    }
+
+    @Transactional(readOnly = true)
+    public List<VariantEntity> searchWithFilter(int unit_id, String search) {
+        log.info("Send query with parameter " + search);
+        return variantRepository.findListOfVariants(unit_id, "%" + search + "%", search + "%");
+    }
+
+    VariantEntity byId(Integer variantId) {
+        return variantRepository.getOne(variantId);
+    }
+
     private VariantEntity createVariant(Variant variant, UnitEntity unit) {
         VariantEntity entity = new VariantEntity();
         entity.setUnit(unit);
         entity.setImageGroup(new ImageGroupEntity());
         entity.setMoyskladId(variant.getId());
         return entity;
-    }
-
-    @Transactional(readOnly = true)
-    public VariantModel getVariantByMoyskladId(String moyskladId) {
-        return variantRepository.findOneByMoyskladId(moyskladId)
-                .map(VariantModel::new)
-                .orElseThrow(() ->new RuntimeException("Cannot find variant " + moyskladId));
     }
 }

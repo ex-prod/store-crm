@@ -14,7 +14,7 @@ public class VariantModel {
     private final String externalCode;
     private final Boolean archived;
     private final BigDecimal price;
-    private final Integer quantity;
+    private final BigDecimal quantity;
     private final Integer imageGroupId;
     private final List<ImageModel> images;
 
@@ -61,7 +61,7 @@ public class VariantModel {
         return price;
     }
 
-    public Integer getQuantity() {
+    public BigDecimal getQuantity() {
         return quantity;
     }
 

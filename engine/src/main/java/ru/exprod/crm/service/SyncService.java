@@ -4,20 +4,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import ru.exprod.crm.service.db.UnitService;
+import ru.exprod.crm.service.db.VariantService;
 import ru.exprod.crm.service.model.ImageModel;
 import ru.exprod.crm.service.model.UnitModel;
 import ru.exprod.crm.service.model.VariantModel;
 import ru.exprod.moysklad.MoySkladApi;
 import ru.exprod.moysklad.api.MoySkladApiImpl;
+import ru.exprod.moysklad.api.model.Order;
+import ru.exprod.moysklad.model.CashinData;
 import ru.exprod.moysklad.model.CustomerData;
 import ru.exprod.moysklad.model.DownloadableImage;
 import ru.exprod.moysklad.model.OrderData;
-import ru.exprod.moysklad.model.OrderPositionData;
+import ru.exprod.moysklad.model.PositionData;
 import ru.exprod.moysklad.model.Variant;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Collections;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -41,7 +45,7 @@ public class SyncService {
         this.mediaService = mediaService;
     }
 
-    public void syncAll() {
+    public synchronized void syncAll() {
         List<UnitModel> units = unitService.getAll();
 
         units.forEach(this::syncUnit);
@@ -100,7 +104,28 @@ public class SyncService {
         }
     }
 
-    public void test() {
+    public void test2() {
+        List<UnitModel> units = unitService.getAll();
+        UnitModel unit = units.get(0);
+        MoySkladApi api = new MoySkladApiImpl(unit.getToken(), unit.getFlowConfigModel());
+
+        Order order = test();
+
+        api.approveOrder(order::getId);
+        api.createCashin(new CashinData() {
+            @Override
+            public String getOrderId() {
+                return order.getId();
+            }
+
+            @Override
+            public BigDecimal getPrepaidValue() {
+                return new BigDecimal(500);
+            }
+        });
+    }
+
+    public Order test() {
         List<UnitModel> units = unitService.getAll();
         UnitModel unit = units.get(0);
         MoySkladApi api = new MoySkladApiImpl(unit.getToken(), unit.getFlowConfigModel());
@@ -116,20 +141,110 @@ public class SyncService {
             }
 
             @Override
-            public List<OrderPositionData> getPositions() {
-                return Collections.emptyList();
-            }
-
-            @Override
             public String getManagerName() {
                 return "марфа";
             }
 
             @Override
+            public String getPrepaidType() {
+                return "Предоплата (500)";
+            }
+
+            @Override
+            public BigDecimal getToPay() {
+                return BigDecimal.valueOf(482);
+            }
+
+            @Override
+            public BigDecimal getDeliveryCost() {
+                return BigDecimal.valueOf(200);
+            }
+
+            @Override
             public CustomerData getCustomerData() {
-                return null;
+                return new CustomerData() {
+                    @Override
+                    public String getName() {
+                        return "Паулина";
+                    }
+
+                    @Override
+                    public String getPhone() {
+                        return "100500";
+                    }
+
+                    @Override
+                    public String getUsername() {
+                        return "paulina";
+                    }
+
+                    @Override
+                    public String getCity() {
+                        return "Куйбышев";
+                    }
+
+                    @Override
+                    public String getZip() {
+                        return "123654";
+                    }
+
+                    @Override
+                    public String getAddress() {
+                        return "Ул Аленкова, 54-1";
+                    }
+
+                    @Override
+                    public String getSdekAddress() {
+                        return "Ул. Аленкова, 5";
+                    }
+                };
+            }
+
+            @Override
+            public List<PositionData> getPositions() {
+                return List.of(new PositionData() {
+                    @Override
+                    public BigDecimal getQuantity() {
+                        return new BigDecimal(1);
+                    }
+
+                    @Override
+                    public BigDecimal getPrice() {
+                        return new BigDecimal(670);
+                    }
+
+                    @Override
+                    public BigDecimal getDiscount() {
+                        return BigDecimal.valueOf(30);
+                    }
+
+                    @Override
+                    public String getVariantId() {
+                        return "ae9534be-72fc-11eb-0a80-05bb000f4d9b";
+                    }
+                }, new PositionData() {
+                    @Override
+                    public BigDecimal getQuantity() {
+                        return new BigDecimal(1);
+                    }
+
+                    @Override
+                    public BigDecimal getPrice() {
+                        return new BigDecimal(570);
+                    }
+
+                    @Override
+                    public BigDecimal getDiscount() {
+                        return BigDecimal.valueOf(10);
+                    }
+
+                    @Override
+                    public String getVariantId() {
+                        return "ae88690f-72fc-11eb-0a80-05bb000f4d61";
+                    }
+                });
             }
         };
-        api.createOrder(data);
+        return api.createOrder(data);
     }
 }
