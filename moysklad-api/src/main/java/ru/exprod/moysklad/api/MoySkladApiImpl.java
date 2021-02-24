@@ -6,6 +6,7 @@ import ru.exprod.moysklad.api.model.Cashin;
 import ru.exprod.moysklad.api.model.ImageMeta;
 import ru.exprod.moysklad.api.model.MetaResponse;
 import ru.exprod.moysklad.api.model.Order;
+
 import ru.exprod.moysklad.api.model.OrderConfirm;
 import ru.exprod.moysklad.api.model.OrderCreate;
 import ru.exprod.moysklad.model.CashinData;
@@ -42,7 +43,7 @@ public class MoySkladApiImpl implements MoySkladApi {
     }
 
     @Override
-    public List<OrderCreate> getOrders() {
+    public List<Order> getOrders() {
         return emptyList();
     }
 

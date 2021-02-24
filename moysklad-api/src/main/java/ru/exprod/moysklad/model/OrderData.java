@@ -1,11 +1,13 @@
 package ru.exprod.moysklad.model;
 
+
 import java.math.BigDecimal;
 import java.util.List;
 
 public interface OrderData {
     String getName();
     String getDescription();
+
     List<PositionData> getPositions();
 
     CustomerData getCustomerData();
@@ -14,5 +16,4 @@ public interface OrderData {
     String getPrepaidType();
     BigDecimal getToPay();
     BigDecimal getDeliveryCost();
-
 }

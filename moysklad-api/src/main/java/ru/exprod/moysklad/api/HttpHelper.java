@@ -2,7 +2,6 @@ package ru.exprod.moysklad.api;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.client.RestTemplate;
 import ru.exprod.moysklad.api.model.MetaResponse;
@@ -14,7 +13,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Function;
 
 import static java.lang.Thread.sleep;
 import static org.springframework.http.HttpMethod.GET;

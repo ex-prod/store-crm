@@ -1,6 +1,5 @@
 package ru.exprod.moysklad.api.model;
 
-import org.w3c.dom.Attr;
 import ru.exprod.moysklad.api.FlowConfig;
 import ru.exprod.moysklad.api.model.attributes.AdditionalAttributes;
 import ru.exprod.moysklad.api.model.attributes.CustomerAttributes;

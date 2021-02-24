@@ -1,4 +1,4 @@
 package ru.exprod.moysklad.api.model;
 
-public class OrderResponse extends ResponseWrapper<OrderCreate> {
+public class OrderResponse extends ResponseWrapper<Order> {
 }

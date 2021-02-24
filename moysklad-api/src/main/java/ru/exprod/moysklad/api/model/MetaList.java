@@ -1,7 +1,5 @@
 package ru.exprod.moysklad.api.model;
 
-import static ru.exprod.moysklad.MoySkladApi.ENTITY_URL;
-
 public enum MetaList {
     ORGANIZATION("organization", "organization"),
     COUNTERPARTY("counterparty", "counterparty"),

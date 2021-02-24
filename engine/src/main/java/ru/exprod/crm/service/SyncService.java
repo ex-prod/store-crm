@@ -139,6 +139,7 @@ public class SyncService {
             public String getDescription() {
                 return "desc order";
             }
+
             @Override
             public String getManagerName() {
                 return "марфа";
@@ -243,7 +244,6 @@ public class SyncService {
                     }
                 });
             }
-
         };
         return api.createOrder(data);
     }
