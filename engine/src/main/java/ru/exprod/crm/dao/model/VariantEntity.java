@@ -1,10 +1,10 @@
 package ru.exprod.crm.dao.model;
 
-import javax.persistence.CascadeType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -22,6 +22,7 @@ public class VariantEntity {
     @Column(updatable = false)
     private Integer variantId;
 
+    @JsonIgnore
     @JoinColumn(name = "unit_id", updatable = false)
     @ManyToOne
     private UnitEntity unit;
@@ -41,6 +42,7 @@ public class VariantEntity {
 
     private Integer quantity;
 
+    @JsonIgnore
     @JoinColumn(name = "image_group_id", updatable = false)
     @ManyToOne(cascade = PERSIST)
     private ImageGroupEntity imageGroup;
