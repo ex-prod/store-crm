@@ -13,7 +13,7 @@ public class CustomerOrderPositionModel {
     private final BigDecimal discount;
 
     public CustomerOrderPositionModel(CustomerOrderPositionEntity entity) {
-        this.id = entity.getCustomerOrderId();
+        this.id = entity.getCustomerOrderPositionId();
         this.moyskladId = entity.getMoyskladId();
         this.variant = new VariantModel(entity.getVariant());
         this.count = entity.getCount();

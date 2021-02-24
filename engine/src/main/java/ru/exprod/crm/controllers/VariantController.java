@@ -2,10 +2,8 @@ package ru.exprod.crm.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.exprod.crm.controllers.model.FilterRequest;
 import ru.exprod.crm.dao.model.VariantEntity;
-import ru.exprod.crm.service.VariantService;
-import ru.exprod.moysklad.model.Variant;
+import ru.exprod.crm.service.db.VariantService;
 
 import java.util.List;
 

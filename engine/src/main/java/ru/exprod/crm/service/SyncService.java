@@ -45,7 +45,7 @@ public class SyncService {
         this.mediaService = mediaService;
     }
 
-    public void syncAll() {
+    public synchronized void syncAll() {
         List<UnitModel> units = unitService.getAll();
 
         units.forEach(this::syncUnit);

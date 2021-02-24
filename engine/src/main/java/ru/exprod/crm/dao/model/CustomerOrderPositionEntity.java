@@ -18,12 +18,12 @@ public class CustomerOrderPositionEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(updatable = false)
-    private Integer customerOrderId;
+    private Integer customerOrderPositionId;
 
     @Column
     private String moyskladId;
 
-    @JoinColumn(name = "customer_order_id", updatable = false)
+    @JoinColumn(name = "customer_order_id", updatable = false, insertable = false)
     @ManyToOne
     private CustomerOrderEntity customerOrder;
 
@@ -37,8 +37,8 @@ public class CustomerOrderPositionEntity {
 
     private BigDecimal discount;
 
-    public Integer getCustomerOrderId() {
-        return customerOrderId;
+    public Integer getCustomerOrderPositionId() {
+        return customerOrderPositionId;
     }
 
     public String getMoyskladId() {

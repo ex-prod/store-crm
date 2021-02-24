@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.exprod.crm.controllers.model.FilterRequest;
 import ru.exprod.crm.dao.model.ImageGroupEntity;
 import ru.exprod.crm.dao.model.UnitEntity;
 import ru.exprod.crm.dao.model.VariantEntity;
@@ -12,7 +11,6 @@ import ru.exprod.crm.dao.repo.VariantRepository;
 import ru.exprod.crm.service.model.VariantModel;
 import ru.exprod.moysklad.model.Variant;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,6 +26,7 @@ public class VariantService {
         this.unitService = unitService;
     }
 
+    @Transactional
     public VariantModel syncVariant(Variant variant, Integer unitId) {
         UnitEntity unit = unitService.byId(unitId);
         VariantEntity entity = variantRepository
@@ -45,14 +44,6 @@ public class VariantService {
         return new VariantModel(entity);
     }
 
-    private VariantEntity createVariant(Variant variant, UnitEntity unit) {
-        VariantEntity entity = new VariantEntity();
-        entity.setUnit(unit);
-        entity.setImageGroup(new ImageGroupEntity());
-        entity.setMoyskladId(variant.getId());
-        return entity;
-    }
-
     @Transactional(readOnly = true)
     public VariantModel getVariantByMoyskladId(String moyskladId) {
         return variantRepository.findOneByMoyskladId(moyskladId)
@@ -60,6 +51,7 @@ public class VariantService {
                 .orElseThrow(() -> new RuntimeException("Cannot find variant " + moyskladId));
     }
 
+    @Transactional(readOnly = true)
     public List<VariantEntity> searchWithFilter(int unit_id, String search) {
         log.info("Send query with parameter " + search);
         return variantRepository.findListOfVariants(unit_id, "%" + search + "%", search + "%");
@@ -67,5 +59,13 @@ public class VariantService {
 
     VariantEntity byId(Integer variantId) {
         return variantRepository.getOne(variantId);
+    }
+
+    private VariantEntity createVariant(Variant variant, UnitEntity unit) {
+        VariantEntity entity = new VariantEntity();
+        entity.setUnit(unit);
+        entity.setImageGroup(new ImageGroupEntity());
+        entity.setMoyskladId(variant.getId());
+        return entity;
     }
 }

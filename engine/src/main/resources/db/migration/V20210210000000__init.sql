@@ -21,7 +21,7 @@ CREATE TABLE manager (
 CREATE INDEX manager_email_idx ON manager(email);
 
 INSERT INTO manager (firstname, lastname, email, password)
-values ('admin', 'admin', 'admin', '$2y$13$u/yVGgDH0RTgJ5VMedv7seffQiZNs.pH1lVQpoRsY19oUUi2akrpa'),
+values ('admin', 'admin', 'admin', '$2a$13$mczzpkM0a4LvS78koGHspOM5O9eaTpngBY.6KhkKyI3V9XD0Hma12'),
        ('system', 'system', 'system', '');
 
 CREATE TABLE role (
