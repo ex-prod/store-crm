@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.exprod.crm.controllers.model.FilterRequest;
 import ru.exprod.crm.dao.model.ImageGroupEntity;
 import ru.exprod.crm.dao.model.UnitEntity;
 import ru.exprod.crm.dao.model.VariantEntity;
@@ -60,8 +59,12 @@ public class VariantService {
                 .orElseThrow(() -> new RuntimeException("Cannot find variant " + moyskladId));
     }
 
-    public List<VariantEntity> searchWithFilter(int unit_id, String search) {
+    public List<VariantModel> searchWithFilter(int unit_id, String search) {
         log.info("Send query with parameter " + search);
-        return variantRepository.findListOfVariants(unit_id, "%" + search + "%", search + "%");
+        List<VariantEntity> entities = variantRepository.findListOfVariants(unit_id, "%" + search + "%", search + "%");
+        List<VariantModel> models = new ArrayList<>();
+        for (VariantEntity entity : entities)
+            models.add(new VariantModel(entity));
+        return models;
     }
 }
