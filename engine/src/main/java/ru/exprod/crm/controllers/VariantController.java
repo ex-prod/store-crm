@@ -18,7 +18,7 @@ public class VariantController {
     @GetMapping("/unit/{unit_id}/variants")
     public List<Variant> getOrders(@PathVariable int unit_id,
                                    @RequestParam(name = "search", required = false, defaultValue = "") String search) {
-        variantService.searchWithFilter(unit_id, search)
+        variantService.searchWithFilter(unit_id, search);
         return new ArrayList<>();
     }
 }
