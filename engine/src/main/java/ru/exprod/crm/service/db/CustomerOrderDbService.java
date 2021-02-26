@@ -1,5 +1,9 @@
 package ru.exprod.crm.service.db;
 
+import org.hibernate.internal.CriteriaImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.exprod.crm.controllers.model.order.CreateCustomerRequest;
@@ -15,12 +19,21 @@ import ru.exprod.crm.service.model.CustomerOrderModel;
 import ru.exprod.crm.service.model.PrepaidType;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.math.BigDecimal.ONE;
+import static java.math.BigDecimal.ZERO;
+import static java.math.RoundingMode.HALF_UP;
+import static org.springframework.data.domain.Sort.Direction.DESC;
+
 @Service
 public class CustomerOrderDbService {
+
+    private static final BigDecimal PERCENT_MULTIPLER = new BigDecimal("0.01");
+
     private final CustomerOrderRepository customerOrderRepository;
     private final UnitService unitService;
     private final VariantService variantService;
@@ -33,6 +46,23 @@ public class CustomerOrderDbService {
         this.customerOrderRepository = customerOrderRepository;
         this.unitService = unitService;
         this.variantService = variantService;
+    }
+
+    @Transactional(readOnly = true)
+    public CustomerOrderModel getOrderByUnitAndId(int orderId, int unitId) {
+        CustomerOrderEntity entity = byId(orderId);
+        if (entity.getUnit().getUnitId() != unitId) {
+            throw new RuntimeException("Not found orderId " + orderId);
+        }
+        return new CustomerOrderModel(entity);
+    }
+
+    @Transactional(readOnly = true)
+    public List<CustomerOrderModel> getOrders(int unitId) {
+        Pageable p = PageRequest.of(0, 30, Sort.by(DESC, "customerOrderId"));
+        return customerOrderRepository.findAllByUnit_UnitId(unitId, p).stream()
+                .map(CustomerOrderModel::new)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -50,9 +80,9 @@ public class CustomerOrderDbService {
         entity.setCustomer(createCustomer(orderCreateRequest.getCustomer()));
         entity.setManager(unit.getDefaultManager()); //todo change to really creator
         entity.setDeliveryCost(orderCreateRequest.getDeliveryCost());
-        entity.setDeliveryType(orderCreateRequest.getDeliveryType().name());
+        entity.setDeliveryType(orderCreateRequest.getDeliveryType());
         entity.setComment(orderCreateRequest.getDescription());
-        entity.setPrepaidType(orderCreateRequest.getPrepaidType().name());
+        entity.setPrepaidType(orderCreateRequest.getPrepaidType());
 
         //todo move logic to service
         if (orderCreateRequest.getPrepaidType().equals(PrepaidType.FULL)) {
@@ -67,7 +97,7 @@ public class CustomerOrderDbService {
 
     @Transactional
     public CustomerOrderModel changeStatusToNew(
-            Integer customerOrderId,
+            int customerOrderId,
             String moySkladId,
             Map<Integer, String> positionsMap
     ) {
@@ -76,6 +106,13 @@ public class CustomerOrderDbService {
         entity.getPositionList().forEach(position ->
                 position.setMoyskladId(positionsMap.get(position.getCustomerOrderPositionId())));
         entity.setState("NEW");
+        customerOrderRepository.save(entity);
+        return new CustomerOrderModel(entity);
+    }
+
+    public CustomerOrderModel changeStatusToConfirm(int customerOrderId) {
+        CustomerOrderEntity entity = byId(customerOrderId);
+        entity.setState("CONFIRMED");
         customerOrderRepository.save(entity);
         return new CustomerOrderModel(entity);
     }
@@ -102,7 +139,13 @@ public class CustomerOrderDbService {
     }
 
     private BigDecimal calculateAmount(List<PositionCreateRequest> positions) {
-        return BigDecimal.ZERO;
+        BigDecimal total = ZERO;
+        for (PositionCreateRequest pos : positions) {
+            BigDecimal discountMultipler = ONE.add(pos.getDiscount().negate().multiply(PERCENT_MULTIPLER));
+            BigDecimal posPrice = pos.getPrice().multiply(discountMultipler);
+            total = total.add(posPrice.multiply(pos.getQuantity()));
+        }
+        return total.setScale(2, HALF_UP);
     }
 
     private CustomerEntity createCustomer(CreateCustomerRequest customer) {
@@ -116,8 +159,7 @@ public class CustomerOrderDbService {
         return entity;
     }
 
-    CustomerOrderEntity byId(Integer customerOrderId) {
+    CustomerOrderEntity byId(int customerOrderId) {
         return customerOrderRepository.getOne(customerOrderId);
     }
-
 }

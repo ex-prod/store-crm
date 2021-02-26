@@ -1,13 +1,13 @@
 package ru.exprod.crm.controllers.model.order;
 
 public class CreateCustomerRequest {
-    private String name;
-    private String phone;
-    private String username;
-    private String city;
-    private String zip;
-    private String address;
-    private String sdekAddress;
+    protected String name;
+    protected String phone;
+    protected String username;
+    protected String city;
+    protected String zip;
+    protected String address;
+    protected String sdekAddress;
 
     public String getName() {
         return name;

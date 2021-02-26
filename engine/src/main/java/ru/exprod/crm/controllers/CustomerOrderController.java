@@ -1,5 +1,6 @@
 package ru.exprod.crm.controllers;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,11 +10,14 @@ import ru.exprod.crm.controllers.model.order.Order;
 import ru.exprod.crm.controllers.model.order.OrderCreateRequest;
 import ru.exprod.crm.service.CustomerOrderService;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequestMapping(
-        value = "/api/unit/{unitId}/customerorders",
+        value = "/api/units/{unitId}/customerorders",
         consumes = APPLICATION_JSON_VALUE,
         produces = APPLICATION_JSON_VALUE
 )
@@ -24,9 +28,22 @@ public class CustomerOrderController {
         this.customerOrderService = customerOrderService;
     }
 
+    @GetMapping
+    public List<Order> getOrders(@PathVariable int unitId) {
+        return customerOrderService.getOrders(unitId).stream()
+                .map(Order::new)
+                .collect(Collectors.toList());
+    }
+
     @PostMapping
     public Order create(@RequestBody OrderCreateRequest request, @PathVariable int unitId) {
         return new Order(customerOrderService.createOrder(request, unitId));
     }
+
+    @PostMapping("/{id}/confirm")
+    public Order confirm(@PathVariable int unitId, @PathVariable("id") int orderId) {
+        return new Order(customerOrderService.confirmOrder(orderId, unitId));
+    }
+
 
 }

@@ -20,7 +20,7 @@ public interface MoySkladApi {
 
     Order createOrder(OrderData data);
 
-    Order approveOrder(ConfirmOrderData data);
+    Order confirmOrder(ConfirmOrderData data);
 
     Cashin createCashin(CashinData data);
 

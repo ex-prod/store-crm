@@ -13,7 +13,7 @@ public class VariantController {
     @Autowired
     VariantService variantService;
 
-    @GetMapping("/api/unit/{unitId}/variants")
+    @GetMapping("/api/units/{unitId}/variants")
     public List<VariantEntity> getOrders(@PathVariable int unitId,
                                          @RequestParam(name = "search", required = false, defaultValue = "") String search) {
 
