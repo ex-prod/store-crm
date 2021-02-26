@@ -1,91 +1,79 @@
 package ru.exprod.moysklad.api;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.client.ClientHttpRequest;
-import org.springframework.util.StreamUtils;
-import org.springframework.web.client.RestTemplate;
 import ru.exprod.moysklad.MoySkladApi;
 import ru.exprod.moysklad.api.model.AssortmentResponse;
+import ru.exprod.moysklad.api.model.Cashin;
 import ru.exprod.moysklad.api.model.ImageMeta;
 import ru.exprod.moysklad.api.model.MetaResponse;
-import ru.exprod.moysklad.model.CounterParty;
-import ru.exprod.moysklad.model.CounterPartyData;
-import ru.exprod.moysklad.model.Order;
-import ru.exprod.moysklad.model.OrderData;
-import ru.exprod.moysklad.model.OrderPosition;
-import ru.exprod.moysklad.model.OrderPositionData;
-import ru.exprod.moysklad.model.Variant;
-import ru.exprod.moysklad.tools.RandomString;
+import ru.exprod.moysklad.api.model.Order;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import ru.exprod.moysklad.api.model.OrderConfirm;
+import ru.exprod.moysklad.api.model.OrderCreate;
+import ru.exprod.moysklad.api.model.Position;
+import ru.exprod.moysklad.api.model.PositionResponse;
+import ru.exprod.moysklad.model.CashinData;
+import ru.exprod.moysklad.model.ConfirmOrderData;
+import ru.exprod.moysklad.model.OrderData;
+import ru.exprod.moysklad.model.Variant;
+
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import static java.lang.Thread.sleep;
 import static java.util.Collections.emptyList;
-import static org.springframework.http.HttpMethod.GET;
 
 public class MoySkladApiImpl implements MoySkladApi {
 
-    private static final ThreadLocal<RandomString> randomString = ThreadLocal.withInitial(
-            () -> new RandomString(16, ThreadLocalRandom.current())
-    );
-
     private static final String MODIFICATION_TYPE = "variant";
-    private static final String ENTITY_URL = "https://online.moysklad.ru/api/remap/1.2/entity";
-    private static final String TOKEN = "86adb04f75a493a941e356d6bc3895f42d63de7f";
-    private final RestTemplate rest;
-    private final HttpHeaders defaultJsonHeaders;
+    private final HttpHelper httpHelper;
+    private final FlowConfig flowConfig;
 
-    public MoySkladApiImpl() {
-        this.rest = new RestTemplate();
-        this.defaultJsonHeaders = new HttpHeaders();
-        this.defaultJsonHeaders.set("Accept", "application/json;charset=utf-8");
-        setAuthorizationHeader(this.defaultJsonHeaders);
+    public MoySkladApiImpl(String token, FlowConfig flowConfig) {
+        this.httpHelper = new HttpHelper(token);
+        this.flowConfig = flowConfig;
     }
 
     @Override
-    public List<Variant> getProducts() {
-        HttpEntity<AssortmentResponse> request = new HttpEntity<>(defaultJsonHeaders);
-        AssortmentResponse assortmentResponse = rest.exchange(getAssortmentUri(), GET, request, AssortmentResponse.class).getBody();
+    public List<Variant> getAssortmentVariants() {
+        AssortmentResponse assortmentResponse = httpHelper.get(getAssortmentPath(), AssortmentResponse.class);
         return assortmentResponse.getRows().stream()
                 .filter(assortment -> MODIFICATION_TYPE.equals(assortment.getMeta().getType()))
                 .map(Variant.Builder::new)
-                .map(builder -> builder.setImages(this::getVariantImages, this::downloadImage))
+                .map(builder -> builder.setImages(this::getVariantImages, httpHelper::downloadFile))
                 .map(Variant.Builder::build)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Order> getOrders() {
-        return null;
-    }
-
-    @Override
-    public CounterParty createCounterParty(CounterPartyData data) {
-        return null;
+        return emptyList();
     }
 
     @Override
     public Order createOrder(OrderData data) {
-        return null;
+        OrderCreate requestData = new OrderCreate(data, flowConfig);
+        return httpHelper.post(getOrdersPath(), requestData, Order.class);
     }
 
     @Override
-    public OrderPosition createOrderPosition(OrderPositionData data) {
-        return null;
+    public Order approveOrder(ConfirmOrderData data) {
+        OrderConfirm orderConfirmData = new OrderConfirm(flowConfig);
+        return httpHelper.put(getOrderPath(data.getOrderId()), orderConfirmData, Order.class);
+    }
+
+    @Override
+    public Cashin createCashin(CashinData data) {
+        Cashin cashinData = Cashin.create(data.getPrepaidValue(), flowConfig, data.getOrderId());
+        return httpHelper.post(getCashinPath(), cashinData, Cashin.class);
+    }
+
+    @Override
+    public List<Position> getPositions(String orderId) {
+        return httpHelper.get(getOrderPositionPath(orderId), PositionResponse.class).getRows();
     }
 
     public List<ImageMeta> getVariantImages(String productId) {
-        HttpEntity<MetaResponse> request = new HttpEntity<>(defaultJsonHeaders);
-        MetaResponse metaResponse = rest.exchange(getVariantImagesUri(productId), GET, request, MetaResponse.class).getBody();
+        MetaResponse metaResponse = httpHelper.get(getVariantImagesPath(productId), MetaResponse.class);
         if (metaResponse == null) {
             return emptyList();
         }
@@ -99,43 +87,28 @@ public class MoySkladApiImpl implements MoySkladApi {
                 .collect(Collectors.toList());
     }
 
-    private File downloadImage(String url) {
-        return rest.execute(
-                url,
-                GET,
-                httpRequest -> setAuthorizationHeader(httpRequest.getHeaders()),
-                this::saveFileFromResponse
-        );
+    private String getVariantImagesPath(String productId) {
+        return "/variant/"+ productId +"/images";
     }
 
-    private void setAuthorizationHeader(HttpHeaders httpHeaders) {
-        httpHeaders.set("Authorization", "Bearer " + TOKEN);
+    private String getAssortmentPath() {
+        return "/assortment";
     }
 
-    private File saveFileFromResponse(org.springframework.http.client.ClientHttpResponse clientHttpResponse) throws IOException {
-        File ret = File.createTempFile(randomString.get().nextString(), ".tmp");
-        StreamUtils.copy(clientHttpResponse.getBody(), new FileOutputStream(ret));
-        try {
-            sleep(100);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        return ret;
+    private String getOrdersPath() {
+        return "/customerorder";
     }
 
-    private URI getVariantImagesUri(String productId) {
-        return getUri(ENTITY_URL + "/variant/"+ productId +"/images");
+    private String getOrderPath(String orderId) {
+        return getOrdersPath() + "/" + orderId;
     }
 
-    private URI getAssortmentUri() {
-        return getUri(ENTITY_URL + "/assortment");
+    private String getOrderPositionPath(String orderId) {
+        return getOrderPath(orderId) + "/positions";
     }
 
-    private URI getUri(String url) {
-        try {
-            return new URI(url);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+    private String getCashinPath() {
+        return "/cashin";
     }
+
 }

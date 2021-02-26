@@ -1,15 +1,16 @@
 package ru.exprod.moysklad.api.model;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class Assortment {
     private String id;
     private String name;
     private String description;
-    private Integer stock;
-    private Integer reserve;
-    private Integer inTransit;
-    private Integer quantity;
+    private BigDecimal stock;
+    private BigDecimal reserve;
+    private BigDecimal inTransit;
+    private BigDecimal quantity;
     private List<Price> salePrices;
     private String article;
     private String code;
@@ -30,19 +31,19 @@ public class Assortment {
         return description;
     }
 
-    public Integer getStock() {
+    public BigDecimal getStock() {
         return stock;
     }
 
-    public Integer getReserve() {
+    public BigDecimal getReserve() {
         return reserve;
     }
 
-    public Integer getInTransit() {
+    public BigDecimal getInTransit() {
         return inTransit;
     }
 
-    public Integer getQuantity() {
+    public BigDecimal getQuantity() {
         return quantity;
     }
 
@@ -72,6 +73,76 @@ public class Assortment {
 
     public Boolean getArchived() {
         return archived;
+    }
+
+    public Assortment setId(String id) {
+        this.id = id;
+        return this;
+    }
+
+    public Assortment setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public Assortment setDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
+    public Assortment setStock(BigDecimal stock) {
+        this.stock = stock;
+        return this;
+    }
+
+    public Assortment setReserve(BigDecimal reserve) {
+        this.reserve = reserve;
+        return this;
+    }
+
+    public Assortment setInTransit(BigDecimal inTransit) {
+        this.inTransit = inTransit;
+        return this;
+    }
+
+    public Assortment setQuantity(BigDecimal quantity) {
+        this.quantity = quantity;
+        return this;
+    }
+
+    public Assortment setSalePrices(List<Price> salePrices) {
+        this.salePrices = salePrices;
+        return this;
+    }
+
+    public Assortment setArticle(String article) {
+        this.article = article;
+        return this;
+    }
+
+    public Assortment setCode(String code) {
+        this.code = code;
+        return this;
+    }
+
+    public Assortment setExternalCode(String externalCode) {
+        this.externalCode = externalCode;
+        return this;
+    }
+
+    public Assortment setMeta(AssortmentMeta meta) {
+        this.meta = meta;
+        return this;
+    }
+
+    public Assortment setImages(AssortmentImagesMeta images) {
+        this.images = images;
+        return this;
+    }
+
+    public Assortment setArchived(Boolean archived) {
+        this.archived = archived;
+        return this;
     }
 }
 

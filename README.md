@@ -35,7 +35,13 @@ DB_HOST=localhost;DB_PORT=5432;DB_NAME=exprod;DB_USER=exprod;DB_PASSWORD=exprod;
 
 1. Добавить в таблицу role_has_unit связь роли с юнитом (как минимум для продажника и для админа)
 
-1. Добавить в таблицу unit_order_state идентификаторы статусов заказов для позиций new и confirmed. 
-   Идентификаторы можно посмотреть по URL https://online.moysklad.ru/api/remap/1.2/entity/metadata?filter=type=customerorder с учеткой этого юнита
+1. Добавить в таблицу unit_moysklad_id:
+   - идентификаторы статусов заказов для позиций new и confirmed https://online.moysklad.ru/api/remap/1.2/entity/metadata?filter=type=customerorder
+   - идентификаторы полей заказа https://online.moysklad.ru/api/remap/1.2/entity/customerorder/metadata/attributes
+   - идентификатор клиента по-умолчанию https://online.moysklad.ru/api/remap/1.2/entity/counterparty
+   - идентификатор организации по-умолчанию https://online.moysklad.ru/api/remap/1.2/entity/organization
+   - идентификатор склада по-умолчанию https://online.moysklad.ru/api/remap/1.2/entity/store
+   
+      
    
    

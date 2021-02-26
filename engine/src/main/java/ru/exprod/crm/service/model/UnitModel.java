@@ -7,10 +7,14 @@ public class UnitModel {
     private final String alias;
     private final String token;
 
+    private final FlowConfigModel flowConfigModel;
+
     public UnitModel(UnitEntity entity) {
         this.id = entity.getUnitId();
         this.alias = entity.getAlias();
         this.token = entity.getMoyskladToken();
+
+        this.flowConfigModel = new FlowConfigModel(entity.getMoyskladIdEntity());
     }
 
     public Integer getId() {
@@ -23,5 +27,9 @@ public class UnitModel {
 
     public String getToken() {
         return token;
+    }
+
+    public FlowConfigModel getFlowConfigModel() {
+        return flowConfigModel;
     }
 }
