@@ -19,7 +19,7 @@ public class CustomerOrderModel {
     private final BigDecimal deliveryCost;
     private final DeliveryType deliveryType;
     private final BigDecimal paid;
-    private final String prepaidType;
+    private final PrepaidType prepaidType;
     private final String comment;
     private final List<CustomerOrderPositionModel> positionList;
 
@@ -34,7 +34,7 @@ public class CustomerOrderModel {
         this.customer = new CustomerModel(entity.getCustomer());
         this.manager = new ManagerModel(entity.getManager());
         this.deliveryCost = entity.getDeliveryCost();
-        this.deliveryType = DeliveryType.valueOf(entity.getDeliveryType());
+        this.deliveryType = entity.getDeliveryType();
         this.paid = entity.getPaid();
         this.prepaidType = entity.getPrepaidType();
         this.comment = entity.getComment();
@@ -91,7 +91,7 @@ public class CustomerOrderModel {
         return paid;
     }
 
-    public String getPrepaidType() {
+    public PrepaidType getPrepaidType() {
         return prepaidType;
     }
 

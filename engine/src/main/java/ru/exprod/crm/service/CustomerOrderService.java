@@ -27,6 +27,10 @@ public class CustomerOrderService {
         this.moySkladApiService = moySkladApiService;
     }
 
+    public List<CustomerOrderModel> getOrders(int unitId) {
+        return customerOrderDbService.getOrders(unitId);
+    }
+
     public CustomerOrderModel createOrder(OrderCreateRequest orderCreate, Integer unitId) {
         CustomerOrderModel order = customerOrderDbService.createOrder(orderCreate, unitId);
 
@@ -36,6 +40,17 @@ public class CustomerOrderService {
 
         return customerOrderDbService.changeStatusToNew(order.getId(), createdMoySkladOrder.getId(), positionIdsMap);
     }
+
+    public CustomerOrderModel confirmOrder(int orderId, int unitId) {
+        CustomerOrderModel order = customerOrderDbService.getOrderByUnitAndId(orderId, unitId);
+        if (!order.getState().equals("NEW")) {
+            throw new RuntimeException("You cannot confirm order with state " + order.getState());
+        }
+        moySkladApiService.confirmOrder(order.getMoyskladId(), unitId);
+        moySkladApiService.createCashin(order.getMoyskladId(), order.getPaid(), unitId);
+        return customerOrderDbService.changeStatusToConfirm(orderId);
+    }
+
 
     private Map<Integer, String> getPositionsIdsMap(List<Position> remote, List<CustomerOrderPositionModel> local) {
         Map<String, String> remoteIds = remote.stream()
