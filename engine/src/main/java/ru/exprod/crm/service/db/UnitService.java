@@ -17,6 +17,10 @@ public class UnitService {
         this.unitRepository = unitRepository;
     }
 
+    public UnitModel getById(Integer unitId) {
+        return new UnitModel(unitRepository.getOne(unitId));
+    }
+
     public List<UnitModel> getAll() {
         return unitRepository.findAll().stream()
                 .map(UnitModel::new)
@@ -26,4 +30,5 @@ public class UnitService {
     UnitEntity byId(Integer unitId) {
         return unitRepository.getOne(unitId);
     }
+
 }

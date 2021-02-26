@@ -1,6 +1,6 @@
-package ru.exprod.crm.controllers.model.ordercreate;
+package ru.exprod.crm.controllers.model.order;
 
-public class Customer {
+public class CreateCustomerRequest {
     private String name;
     private String phone;
     private String username;

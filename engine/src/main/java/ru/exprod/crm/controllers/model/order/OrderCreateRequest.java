@@ -1,4 +1,4 @@
-package ru.exprod.crm.controllers.model.ordercreate;
+package ru.exprod.crm.controllers.model.order;
 
 import ru.exprod.crm.service.model.DeliveryType;
 import ru.exprod.crm.service.model.PrepaidType;
@@ -7,15 +7,15 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class OrderCreateRequest {
-    private String description;
-    private List<PositionCreateRequest> positions;
+    protected String description;
+    protected List<PositionCreateRequest> positions;
 
-    private Customer customer;
+    protected CreateCustomerRequest customer;
 
-    private PrepaidType prepaidType;
-    private BigDecimal toPay;
-    private BigDecimal deliveryCost;
-    private DeliveryType deliveryType;
+    protected PrepaidType prepaidType;
+    protected BigDecimal toPay;
+    protected BigDecimal deliveryCost;
+    protected DeliveryType deliveryType;
 
     public String getDescription() {
         return description;
@@ -25,7 +25,7 @@ public class OrderCreateRequest {
         return positions;
     }
 
-    public Customer getCustomer() {
+    public CreateCustomerRequest getCustomer() {
         return customer;
     }
 

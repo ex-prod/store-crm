@@ -1,4 +1,4 @@
-package ru.exprod.crm.controllers.model.ordercreate;
+package ru.exprod.crm.controllers.model.order;
 
 import java.math.BigDecimal;
 

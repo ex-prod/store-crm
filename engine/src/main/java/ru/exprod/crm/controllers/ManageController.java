@@ -3,6 +3,7 @@ package ru.exprod.crm.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.exprod.crm.service.SyncService;
+import ru.exprod.moysklad.api.model.Order;
 
 @RestController
 @RequestMapping("/api/manage")
@@ -21,7 +22,8 @@ public class ManageController {
 
     @RequestMapping("/test")
     public void test() {
-        syncService.test();
+        Order o = syncService.test();
+        System.out.println(o);
     }
 
     @RequestMapping("/test2")
