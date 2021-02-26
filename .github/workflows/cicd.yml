@@ -60,7 +60,7 @@ jobs:
       - name: Deploy container to dev-server
         env:
           IMAGE_TAG: ${{ github.sha }}
-          ECR_REPOSITORY: figure-it/server
+          ECR_REPOSITORY: store-crm/ex-prod
         run: |
           ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_ADDR "docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG"
           ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_ADDR "docker container rm -f figure-it || true"
