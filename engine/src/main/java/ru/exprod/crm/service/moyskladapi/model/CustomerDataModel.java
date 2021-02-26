@@ -1,6 +1,5 @@
 package ru.exprod.crm.service.moyskladapi.model;
 
-import ru.exprod.crm.controllers.model.ordercreate.Customer;
 import ru.exprod.crm.service.model.CustomerModel;
 import ru.exprod.crm.service.model.DeliveryType;
 import ru.exprod.moysklad.model.CustomerData;

@@ -9,6 +9,8 @@ import ru.exprod.moysklad.api.model.Order;
 
 import ru.exprod.moysklad.api.model.OrderConfirm;
 import ru.exprod.moysklad.api.model.OrderCreate;
+import ru.exprod.moysklad.api.model.Position;
+import ru.exprod.moysklad.api.model.PositionResponse;
 import ru.exprod.moysklad.model.CashinData;
 import ru.exprod.moysklad.model.ConfirmOrderData;
 import ru.exprod.moysklad.model.OrderData;
@@ -65,6 +67,11 @@ public class MoySkladApiImpl implements MoySkladApi {
         return httpHelper.post(getCashinPath(), cashinData, Cashin.class);
     }
 
+    @Override
+    public List<Position> getPositions(String orderId) {
+        return httpHelper.get(getOrderPositionPath(orderId), PositionResponse.class).getRows();
+    }
+
     public List<ImageMeta> getVariantImages(String productId) {
         MetaResponse metaResponse = httpHelper.get(getVariantImagesPath(productId), MetaResponse.class);
         if (metaResponse == null) {
@@ -93,7 +100,11 @@ public class MoySkladApiImpl implements MoySkladApi {
     }
 
     private String getOrderPath(String orderId) {
-        return "/customerorder/" + orderId;
+        return getOrdersPath() + "/" + orderId;
+    }
+
+    private String getOrderPositionPath(String orderId) {
+        return getOrderPath(orderId) + "/positions";
     }
 
     private String getCashinPath() {

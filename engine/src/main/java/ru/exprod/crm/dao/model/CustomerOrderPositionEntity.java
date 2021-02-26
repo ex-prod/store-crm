@@ -23,7 +23,7 @@ public class CustomerOrderPositionEntity {
     @Column
     private String moyskladId;
 
-    @JoinColumn(name = "customer_order_id", updatable = false, insertable = false)
+    @JoinColumn(name = "customer_order_id", updatable = false)
     @ManyToOne
     private CustomerOrderEntity customerOrder;
 

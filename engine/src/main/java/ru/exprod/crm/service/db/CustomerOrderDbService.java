@@ -2,9 +2,9 @@ package ru.exprod.crm.service.db;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.exprod.crm.controllers.model.ordercreate.Customer;
-import ru.exprod.crm.controllers.model.ordercreate.OrderCreateRequest;
-import ru.exprod.crm.controllers.model.ordercreate.PositionCreateRequest;
+import ru.exprod.crm.controllers.model.order.CreateCustomerRequest;
+import ru.exprod.crm.controllers.model.order.OrderCreateRequest;
+import ru.exprod.crm.controllers.model.order.PositionCreateRequest;
 import ru.exprod.crm.dao.model.CustomerEntity;
 import ru.exprod.crm.dao.model.CustomerOrderEntity;
 import ru.exprod.crm.dao.model.CustomerOrderPositionEntity;
@@ -15,8 +15,8 @@ import ru.exprod.crm.service.model.CustomerOrderModel;
 import ru.exprod.crm.service.model.PrepaidType;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,6 +52,7 @@ public class CustomerOrderDbService {
         entity.setDeliveryCost(orderCreateRequest.getDeliveryCost());
         entity.setDeliveryType(orderCreateRequest.getDeliveryType().name());
         entity.setComment(orderCreateRequest.getDescription());
+        entity.setPrepaidType(orderCreateRequest.getPrepaidType().name());
 
         //todo move logic to service
         if (orderCreateRequest.getPrepaidType().equals(PrepaidType.FULL)) {
@@ -60,6 +61,21 @@ public class CustomerOrderDbService {
             entity.setPaid(BigDecimal.valueOf(500));
         }
 
+        customerOrderRepository.save(entity);
+        return new CustomerOrderModel(entity);
+    }
+
+    @Transactional
+    public CustomerOrderModel changeStatusToNew(
+            Integer customerOrderId,
+            String moySkladId,
+            Map<Integer, String> positionsMap
+    ) {
+        CustomerOrderEntity entity = byId(customerOrderId);
+        entity.setMoyskladId(moySkladId);
+        entity.getPositionList().forEach(position ->
+                position.setMoyskladId(positionsMap.get(position.getCustomerOrderPositionId())));
+        entity.setState("NEW");
         customerOrderRepository.save(entity);
         return new CustomerOrderModel(entity);
     }
@@ -76,11 +92,12 @@ public class CustomerOrderDbService {
             throw new RuntimeException("Недостаточное количество товара " + variant.getName());
         }
         CustomerOrderPositionEntity entity = new CustomerOrderPositionEntity();
-        entity.setPrice(variant.getPrice());
+        entity.setPrice(request.getPrice());
         entity.setDiscount(request.getDiscount());
         entity.setCount(request.getQuantity());
         entity.setVariant(variant);
         entity.setCustomerOrder(order);
+        entity.setMoyskladId("");
         return entity;
     }
 
@@ -88,7 +105,7 @@ public class CustomerOrderDbService {
         return BigDecimal.ZERO;
     }
 
-    private CustomerEntity createCustomer(Customer customer) {
+    private CustomerEntity createCustomer(CreateCustomerRequest customer) {
         CustomerEntity entity = new CustomerEntity();
         entity.setCity(customer.getCity());
         entity.setAddress(customer.getAddress().isEmpty() ? customer.getSdekAddress() : customer.getAddress());
@@ -97,6 +114,10 @@ public class CustomerOrderDbService {
         entity.setUsername(customer.getUsername());
         entity.setZip(customer.getZip());
         return entity;
+    }
+
+    CustomerOrderEntity byId(Integer customerOrderId) {
+        return customerOrderRepository.getOne(customerOrderId);
     }
 
 }

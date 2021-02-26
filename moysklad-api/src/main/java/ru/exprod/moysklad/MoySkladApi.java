@@ -3,6 +3,7 @@ package ru.exprod.moysklad;
 
 import ru.exprod.moysklad.api.model.Cashin;
 import ru.exprod.moysklad.api.model.Order;
+import ru.exprod.moysklad.api.model.Position;
 import ru.exprod.moysklad.model.CashinData;
 import ru.exprod.moysklad.model.ConfirmOrderData;
 import ru.exprod.moysklad.model.OrderData;
@@ -22,4 +23,6 @@ public interface MoySkladApi {
     Order approveOrder(ConfirmOrderData data);
 
     Cashin createCashin(CashinData data);
+
+    List<Position> getPositions(String moyskladId);
 }

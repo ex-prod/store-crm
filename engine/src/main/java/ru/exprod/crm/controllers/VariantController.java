@@ -13,10 +13,10 @@ public class VariantController {
     @Autowired
     VariantService variantService;
 
-    @GetMapping("/api/unit/{unit_id}/variants")
-    public List<VariantEntity> getOrders(@PathVariable int unit_id,
+    @GetMapping("/api/unit/{unitId}/variants")
+    public List<VariantEntity> getOrders(@PathVariable int unitId,
                                          @RequestParam(name = "search", required = false, defaultValue = "") String search) {
 
-        return variantService.searchWithFilter(unit_id, search);
+        return variantService.searchWithFilter(unitId, search);
     }
 }
