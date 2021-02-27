@@ -36,4 +36,9 @@ public class ManagerModel {
     public String getPassword() {
         return password;
     }
+
+    public String getFullName() {
+        return lastname + " " + firstname;
+    }
+
 }

@@ -56,7 +56,7 @@ public class MoySkladApiImpl implements MoySkladApi {
     }
 
     @Override
-    public Order approveOrder(ConfirmOrderData data) {
+    public Order confirmOrder(ConfirmOrderData data) {
         OrderConfirm orderConfirmData = new OrderConfirm(flowConfig);
         return httpHelper.put(getOrderPath(data.getOrderId()), orderConfirmData, Order.class);
     }

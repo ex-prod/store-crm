@@ -1,6 +1,7 @@
 package ru.exprod.crm.service.moyskladapi.model;
 
 import ru.exprod.crm.service.model.CustomerOrderModel;
+import ru.exprod.crm.service.model.PrepaidType;
 import ru.exprod.moysklad.model.CustomerData;
 import ru.exprod.moysklad.model.OrderData;
 import ru.exprod.moysklad.model.PositionData;
@@ -15,7 +16,7 @@ public class CreateOrderModel implements OrderData {
     private final List<PositionData> positions;
     private final CustomerData customerData;
     private final String managerName;
-    private final String prepaidType;
+    private final PrepaidType prepaidType;
     private final BigDecimal toPay;
     private final BigDecimal deliveryCost;
     private final Integer unitId;
@@ -61,7 +62,7 @@ public class CreateOrderModel implements OrderData {
 
     @Override
     public String getPrepaidType() {
-        return prepaidType;
+        return prepaidType.name();
     }
 
     @Override

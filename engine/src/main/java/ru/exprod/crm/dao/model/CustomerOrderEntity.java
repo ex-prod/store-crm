@@ -1,8 +1,13 @@
 package ru.exprod.crm.dao.model;
 
+import ru.exprod.crm.service.model.DeliveryType;
+import ru.exprod.crm.service.model.PrepaidType;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -15,6 +20,7 @@ import java.util.List;
 
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
@@ -50,11 +56,13 @@ public class CustomerOrderEntity {
 
     private BigDecimal deliveryCost;
 
-    private String deliveryType;
+    @Enumerated(STRING)
+    private DeliveryType deliveryType;
 
     private BigDecimal paid;
 
-    private String prepaidType;
+    @Enumerated(STRING)
+    private PrepaidType prepaidType;
 
     private String comment;
 
@@ -137,11 +145,11 @@ public class CustomerOrderEntity {
         this.deliveryCost = deliveryCost;
     }
 
-    public String getDeliveryType() {
+    public DeliveryType getDeliveryType() {
         return deliveryType;
     }
 
-    public void setDeliveryType(String deliveryType) {
+    public void setDeliveryType(DeliveryType deliveryType) {
         this.deliveryType = deliveryType;
     }
 
@@ -153,11 +161,11 @@ public class CustomerOrderEntity {
         this.paid = paid;
     }
 
-    public String getPrepaidType() {
+    public PrepaidType getPrepaidType() {
         return prepaidType;
     }
 
-    public void setPrepaidType(String prepaidType) {
+    public void setPrepaidType(PrepaidType prepaidType) {
         this.prepaidType = prepaidType;
     }
 
