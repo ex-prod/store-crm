@@ -18,17 +18,17 @@ public class Variant {
     private final Integer imageGroupId;
     private final List<ImageModel> images;
 
-    public Variant(VariantModel vm){
-        this.id = vm.getId();
-        this.moyskladId = vm.getMoyskladId();
-        this.name = vm.getName();
-        this.code = vm.getCode();
-        this.externalCode = vm.getExternalCode();
-        this.archived = vm.getArchived();
-        this.price = vm.getPrice();
-        this.quantity = vm.getQuantity();
-        this.imageGroupId = vm.getImageGroupId();
-        this.images = vm.getImages();
+    public Variant(VariantModel variantModel){
+        this.id = variantModel.getId();
+        this.moyskladId = variantModel.getMoyskladId();
+        this.name = variantModel.getName();
+        this.code = variantModel.getCode();
+        this.externalCode = variantModel.getExternalCode();
+        this.archived = variantModel.getArchived();
+        this.price = variantModel.getPrice();
+        this.quantity = variantModel.getQuantity();
+        this.imageGroupId = variantModel.getImageGroupId();
+        this.images = variantModel.getImages();
     }
 
     public Integer getId() {

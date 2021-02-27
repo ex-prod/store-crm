@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/variants")
 public class VariantController {
 
     @Autowired
     VariantService variantService;
 
-    @GetMapping("/unit/{unit_id}/variants")
+    @GetMapping("/unit/{unit_id}")
     public List<Variant> getOrders(@PathVariable int unit_id,
                                    @RequestParam(name = "search", required = false, defaultValue = "") String search) {
         List<VariantModel> models = variantService.searchWithFilter(unit_id, search);
