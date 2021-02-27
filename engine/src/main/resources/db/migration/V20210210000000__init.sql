@@ -2,6 +2,8 @@
 -- docker exec -it postgres bash
 -- psql -U postgres
 
+-- CREATE DATABASE exprod;
+-- \c exprod
 -- CREATE SCHEMA exprod;
 -- SET SEARCH_PATH = exprod;
 -- CREATE ROLE exprod PASSWORD 'exprod' LOGIN;
