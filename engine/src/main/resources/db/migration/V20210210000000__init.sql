@@ -1,7 +1,12 @@
+-- docker run --name postgres -e POSTGRES_PASSWORD=propaganda -p 5432:5432 -d postgres:12.6
+-- docker exec -it postgres bash
+-- psql -U postgres
+
+-- CREATE DATABASE exprod;
+-- \c exprod
 -- CREATE SCHEMA exprod;
 -- SET SEARCH_PATH = exprod;
 -- CREATE ROLE exprod PASSWORD 'exprod' LOGIN;
-
 -- GRANT ALL PRIVILEGES ON SCHEMA exprod TO exprod;
 -- GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA exprod TO exprod;
 -- GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA exprod TO exprod;

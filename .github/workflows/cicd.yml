@@ -8,7 +8,6 @@ on:
 jobs:
   compile-build-image-dev:
     runs-on: ubuntu-20.04
-
     steps:
       - uses: actions/checkout@v2
       - name: gradle cache
@@ -23,7 +22,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-
       - name: Run checkstyle/test/build
         run: gradle build
 
@@ -37,7 +35,7 @@ jobs:
           ECR_REPOSITORY: store-crm/ex-prod
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build --build-arg JAR_FILE=server/build/libs/*.jar -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build --build-arg JAR_FILE=engine/build/libs/*.jar -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latestdev
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latestdev
@@ -62,9 +60,10 @@ jobs:
       - name: Deploy container to dev-server
         env:
           IMAGE_TAG: ${{ github.sha }}
-          ECR_REPOSITORY: figure-it/server
+          ECR_REPOSITORY: store-crm/ex-prod
+          ENV_FILE: ~/store-crm.env
         run: |
           ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_ADDR "docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG"
-          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_ADDR "docker container rm -f figure-it || true"
-          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_ADDR "docker run -d -p 80:8080 --name figure-it $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG"
+          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_ADDR "docker container rm -f store-crm || true"
+          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_ADDR "docker run -d --env-file $ENV_FILE -p 80:8080 --net=dev-net -v ~/images:/images --name store-crm $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG"
 

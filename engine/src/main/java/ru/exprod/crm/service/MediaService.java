@@ -78,6 +78,6 @@ public class MediaService {
         if (result) {
             return path;
         }
-        throw new RuntimeException("Cannot create image dir " + path);
+        throw new RuntimeException("Cannot create image dir " + dir.getAbsolutePath());
     }
 }
