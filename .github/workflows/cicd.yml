@@ -65,5 +65,5 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_ADDR "docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG"
           ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_ADDR "docker container rm -f store-crm || true"
-          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_ADDR "docker run -d --env-file $ENV_FILE -p 80:8080 --net=dev-net --name store-crm $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG"
+          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_ADDR "docker run -d --env-file $ENV_FILE -p 80:8080 --net=dev-net -v ~/images:/home/spring/images --name store-crm $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG"
 
