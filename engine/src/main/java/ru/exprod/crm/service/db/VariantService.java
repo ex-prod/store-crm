@@ -11,6 +11,7 @@ import ru.exprod.crm.dao.repo.VariantRepository;
 import ru.exprod.crm.service.model.VariantModel;
 import ru.exprod.moysklad.model.Variant;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -52,9 +53,13 @@ public class VariantService {
     }
 
     @Transactional(readOnly = true)
-    public List<VariantEntity> searchWithFilter(int unit_id, String search) {
+    public List<VariantModel> searchWithFilter(int unit_id, String search) {
         log.info("Send query with parameter " + search);
-        return variantRepository.findListOfVariants(unit_id, "%" + search + "%", search + "%");
+        List<VariantEntity> entities = variantRepository.findListOfVariants(unit_id, "%" + search + "%", search + "%");
+        List<VariantModel> models = new ArrayList<>();
+        for (VariantEntity entity : entities)
+            models.add(new VariantModel(entity));
+        return models;
     }
 
     VariantEntity byId(Integer variantId) {

@@ -122,4 +122,5 @@ public class VariantEntity {
     public void setImageGroup(ImageGroupEntity imageGroup) {
         this.imageGroup = imageGroup;
     }
+
 }
