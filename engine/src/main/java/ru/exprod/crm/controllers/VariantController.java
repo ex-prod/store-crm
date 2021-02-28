@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/unit/{unit_id}/variants")
+@RequestMapping("/api/units/{unit_id}/variants")
 public class VariantController {
 
     @Autowired
