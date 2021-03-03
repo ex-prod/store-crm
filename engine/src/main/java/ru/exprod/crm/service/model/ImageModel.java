@@ -1,9 +1,6 @@
 package ru.exprod.crm.service.model;
 
 import ru.exprod.crm.dao.model.ImageEntity;
-import ru.exprod.crm.dao.model.UnitEntity;
-
-import javax.persistence.Column;
 
 public class ImageModel {
     private final Integer id;

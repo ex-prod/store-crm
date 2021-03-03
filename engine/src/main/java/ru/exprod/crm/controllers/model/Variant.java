@@ -5,6 +5,7 @@ import ru.exprod.crm.service.model.VariantModel;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Variant {
     private final Integer id;
@@ -16,9 +17,9 @@ public class Variant {
     private final BigDecimal price;
     private final BigDecimal quantity;
     private final Integer imageGroupId;
-    private final List<ImageModel> images;
+    private final List<Image> images;
 
-    public Variant(VariantModel variantModel){
+    public Variant(VariantModel variantModel, String imageHost) {
         this.id = variantModel.getId();
         this.moyskladId = variantModel.getMoyskladId();
         this.name = variantModel.getName();
@@ -28,7 +29,9 @@ public class Variant {
         this.price = variantModel.getPrice();
         this.quantity = variantModel.getQuantity();
         this.imageGroupId = variantModel.getImageGroupId();
-        this.images = variantModel.getImages();
+        this.images = variantModel.getImages().stream()
+                .map(image -> new Image(image, imageHost))
+                .collect(Collectors.toList());
     }
 
     public Integer getId() {
@@ -67,7 +70,7 @@ public class Variant {
         return imageGroupId;
     }
 
-    public List<ImageModel> getImages() {
+    public List<Image> getImages() {
         return images;
     }
 
