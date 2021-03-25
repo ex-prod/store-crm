@@ -72,7 +72,7 @@ public class CustomerOrderDbService {
 
         entity.setMoyskladId("");
         entity.setUnit(unit);
-        entity.setName("");
+        entity.setName(orderCreateRequest.getDescription());
         entity.setPositions(orderCreateRequest.getPositions().size());
         entity.setPositionList(createPositions(orderCreateRequest.getPositions(), entity));
         entity.setAmount(calculateAmount(orderCreateRequest.getPositions()));
@@ -113,6 +113,13 @@ public class CustomerOrderDbService {
     public CustomerOrderModel changeStatusToConfirm(int customerOrderId) {
         CustomerOrderEntity entity = byId(customerOrderId);
         entity.setState("CONFIRMED");
+        customerOrderRepository.save(entity);
+        return new CustomerOrderModel(entity);
+    }
+
+    public CustomerOrderModel changeStatusToCancelled(int customerOrderId) {
+        CustomerOrderEntity entity = byId(customerOrderId);
+        entity.setState("CANCELLED");
         customerOrderRepository.save(entity);
         return new CustomerOrderModel(entity);
     }

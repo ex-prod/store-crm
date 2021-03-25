@@ -46,5 +46,10 @@ public class CustomerOrderController {
         return new Order(customerOrderService.confirmOrder(orderId, unitId));
     }
 
+    @PostMapping("/{id}/cancel")
+    public Order cancel(@PathVariable int unitId, @PathVariable("id") int orderId) {
+        return new Order(customerOrderService.cancelOrder(orderId, unitId));
+    }
+
 
 }

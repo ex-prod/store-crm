@@ -51,6 +51,12 @@ public class CustomerOrderService {
         return customerOrderDbService.changeStatusToConfirm(orderId);
     }
 
+    public CustomerOrderModel cancelOrder(int orderId, int unitId) {
+        CustomerOrderModel order = customerOrderDbService.getOrderByUnitAndId(orderId, unitId);
+        moySkladApiService.cancelOrder(order.getMoyskladId(), unitId);
+        return customerOrderDbService.changeStatusToCancelled(orderId);
+    }
+
 
     private Map<Integer, String> getPositionsIdsMap(List<Position> remote, List<CustomerOrderPositionModel> local) {
         Map<String, String> remoteIds = remote.stream()

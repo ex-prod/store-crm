@@ -47,6 +47,10 @@ public class MoySkladApiService {
         return getApiInstance(unitId).confirmOrder(() -> orderId);
     }
 
+    public Order cancelOrder(String orderId, int unitId) {
+        return getApiInstance(unitId).cancelOrder(() -> orderId);
+    }
+
     public List<Position> getPositions(String moyskladId, int unitId) {
         return getApiInstance(unitId).getPositions(moyskladId);
     }

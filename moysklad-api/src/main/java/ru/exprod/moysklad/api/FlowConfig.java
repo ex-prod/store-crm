@@ -3,6 +3,7 @@ package ru.exprod.moysklad.api;
 public interface FlowConfig {
     String getOrderStateNew();
     String getOrderStateConfirmed();
+    String getOrderStateCancelled();
 
     String getAttributeName();
     String getAttributeInstagramName();

@@ -22,6 +22,8 @@ public interface MoySkladApi {
 
     Order confirmOrder(ConfirmOrderData data);
 
+    Order cancelOrder(ConfirmOrderData data);
+
     Cashin createCashin(CashinData data);
 
     List<Position> getPositions(String moyskladId);
