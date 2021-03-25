@@ -43,7 +43,9 @@ public class UnitMoyskladIdEntity {
         return orderStateConfirmed;
     }
 
-    public String getOrderStateCancelled() { return orderStateCancelled; }
+    public String getOrderStateCancelled() {
+        return orderStateCancelled;
+    }
 
     public String getAttributeName() {
         return attributeName;
