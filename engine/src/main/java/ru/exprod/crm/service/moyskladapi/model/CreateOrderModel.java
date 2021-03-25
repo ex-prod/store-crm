@@ -23,7 +23,7 @@ public class CreateOrderModel implements OrderData {
     private final Integer unitId;
 
     public CreateOrderModel(CustomerOrderModel order) {
-        this.name = String.valueOf((new Random()).nextLong() & Long.MAX_VALUE).substring(0,6);
+        this.name = String.format("%06d", order.getId());
         this.description = order.getComment();
         this.positions = order.getPositionList().stream()
                 .map(CreatePositionModel::new)

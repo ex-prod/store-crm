@@ -8,7 +8,6 @@ import java.util.List;
 
 public class OrderCreateRequest {
     protected String description;
-    protected String name;
     protected List<PositionCreateRequest> positions;
 
     protected CreateCustomerRequest customer;
