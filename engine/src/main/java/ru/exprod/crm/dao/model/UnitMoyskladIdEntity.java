@@ -17,6 +17,7 @@ public class UnitMoyskladIdEntity {
 
     private String orderStateNew;
     private String orderStateConfirmed;
+    private String orderStateCancelled;
 
     private String attributeName;
     private String attributeInstagramName;
@@ -40,6 +41,10 @@ public class UnitMoyskladIdEntity {
 
     public String getOrderStateConfirmed() {
         return orderStateConfirmed;
+    }
+
+    public String getOrderStateCancelled() {
+        return orderStateCancelled;
     }
 
     public String getAttributeName() {

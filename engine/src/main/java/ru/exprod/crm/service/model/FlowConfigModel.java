@@ -6,6 +6,7 @@ import ru.exprod.moysklad.api.FlowConfig;
 public class FlowConfigModel implements FlowConfig {
     private final String orderStateNew;
     private final String orderStateConfirmed;
+    private final String orderStateCancelled;
 
     private final String attributeName;
     private final String attributeInstagramName;
@@ -26,6 +27,7 @@ public class FlowConfigModel implements FlowConfig {
     public FlowConfigModel(UnitMoyskladIdEntity unitMoyskladIdEntity) {
         this.orderStateNew = unitMoyskladIdEntity.getOrderStateNew();
         this.orderStateConfirmed = unitMoyskladIdEntity.getOrderStateConfirmed();
+        this.orderStateCancelled = unitMoyskladIdEntity.getOrderStateCancelled();
 
         this.attributeName = unitMoyskladIdEntity.getAttributeName();
         this.attributeInstagramName = unitMoyskladIdEntity.getAttributeInstagramName();
@@ -52,6 +54,11 @@ public class FlowConfigModel implements FlowConfig {
     @Override
     public String getOrderStateConfirmed() {
         return orderStateConfirmed;
+    }
+
+    @Override
+    public String getOrderStateCancelled() {
+        return orderStateCancelled;
     }
 
     @Override

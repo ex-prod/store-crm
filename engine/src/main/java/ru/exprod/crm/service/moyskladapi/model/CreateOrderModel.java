@@ -8,6 +8,7 @@ import ru.exprod.moysklad.model.PositionData;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public class CreateOrderModel implements OrderData {

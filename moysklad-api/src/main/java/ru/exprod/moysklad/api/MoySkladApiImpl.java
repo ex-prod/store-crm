@@ -9,6 +9,7 @@ import ru.exprod.moysklad.api.model.Order;
 
 import ru.exprod.moysklad.api.model.OrderConfirm;
 import ru.exprod.moysklad.api.model.OrderCreate;
+import ru.exprod.moysklad.api.model.OrderCancel;
 import ru.exprod.moysklad.api.model.Position;
 import ru.exprod.moysklad.api.model.PositionResponse;
 import ru.exprod.moysklad.model.CashinData;
@@ -59,6 +60,12 @@ public class MoySkladApiImpl implements MoySkladApi {
     public Order confirmOrder(ConfirmOrderData data) {
         OrderConfirm orderConfirmData = new OrderConfirm(flowConfig);
         return httpHelper.put(getOrderPath(data.getOrderId()), orderConfirmData, Order.class);
+    }
+
+    @Override
+    public Order cancelOrder(ConfirmOrderData data) {
+        OrderCancel orderCancelData = new OrderCancel(flowConfig);
+        return httpHelper.put(getOrderPath(data.getOrderId()), orderCancelData, Order.class);
     }
 
     @Override

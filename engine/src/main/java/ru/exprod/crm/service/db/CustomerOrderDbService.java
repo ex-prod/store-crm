@@ -110,9 +110,18 @@ public class CustomerOrderDbService {
         return new CustomerOrderModel(entity);
     }
 
+    @Transactional
     public CustomerOrderModel changeStatusToConfirm(int customerOrderId) {
         CustomerOrderEntity entity = byId(customerOrderId);
         entity.setState("CONFIRMED");
+        customerOrderRepository.save(entity);
+        return new CustomerOrderModel(entity);
+    }
+
+    @Transactional
+    public CustomerOrderModel changeStatusToCancelled(int customerOrderId) {
+        CustomerOrderEntity entity = byId(customerOrderId);
+        entity.setState("CANCELLED");
         customerOrderRepository.save(entity);
         return new CustomerOrderModel(entity);
     }
